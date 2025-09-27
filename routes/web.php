@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\AbsensiController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,7 +31,7 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth/login');
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -60,6 +61,19 @@ Route::middleware(['auth'])->group(function () {
 
 Route::middleware(['auth', 'role:superadmin'])->group(function () {
     Route::resource('companies', CompanyController::class);
+});
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::resource('companies', CompanyController::class);
+});
+
+Route::middleware(['auth', 'role:employee'])->group(function () {
+    Route::get('/employees/absensi', [AbsensiController::class, 'index'])
+        ->name('employees.absensi');
+    Route::get('/employees/absensi/create', [AbsensiController::class, 'create'])
+        ->name('employees.absensi_create');
+
+
 });
 
 

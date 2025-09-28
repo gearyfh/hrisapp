@@ -63,9 +63,9 @@ Route::middleware(['auth', 'role:superadmin'])->group(function () {
     Route::resource('companies', CompanyController::class);
 });
 
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::resource('companies', CompanyController::class);
-});
+// Route::middleware(['auth', 'role:admin'])->group(function () {
+//     Route::resource('companies', CompanyController::class);
+// });
 
 Route::middleware(['auth', 'role:employee'])->group(function () {
     Route::get('/employees/absensi', [AbsensiController::class, 'index'])

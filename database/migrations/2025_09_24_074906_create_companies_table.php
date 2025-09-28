@@ -17,6 +17,13 @@ return new class extends Migration
             $table->id('id');
             $table->string('company_code')->unique();
             $table->string('company_name');
+            $table->string('address')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('email')->nullable();
+
+            $table->decimal('latitude', 10, 8)->nullable();
+            $table->decimal('longitude', 11, 8)->nullable();
+
             $table->timestamps();
         });
     }

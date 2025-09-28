@@ -5,9 +5,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class Company extends Model
 {
+    
     protected $primaryKey = 'id';
 
-    protected $fillable = ['company_code','company_name'];
+    protected $fillable = ['company_code',
+        'company_name',
+        'address',
+        'phone',
+        'email',
+        'latitude',
+        'longitude',
+    ];
+
 
     public function employees()
     {

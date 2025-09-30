@@ -73,7 +73,8 @@ Route::middleware(['auth', 'role:employee'])->group(function () {
         ->name('employees.absensi');
     Route::get('/employees/absensi/create', [AbsensiController::class, 'create'])
         ->name('employees.absensi_create');
-
+    Route::post('/employees/absensi', [AbsensiController::class, 'store'])
+    ->name('employees.absensi_store');
 
 });
 

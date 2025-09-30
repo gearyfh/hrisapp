@@ -35,25 +35,27 @@
                     <tr>
                         <th class="px-4 py-2">Tanggal</th>
                         <th class="px-4 py-2">Jam</th>
+                        <th class="px-4 py-2">Jenis</th>
                         <th class="px-4 py-2">Lokasi</th>
-                        <th class="px-4 py-2">Status</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {{-- Contoh data, nanti ambil dari DB --}}
-                    <tr class="border-t">
-                        <td class="px-4 py-2">2025-09-27</td>
-                        <td class="px-4 py-2">07:42</td>
-                        <td class="px-4 py-2">WFO</td>
-                        <td class="px-4 py-2 text-green-600 font-semibold">Hadir</td>
-                    </tr>
-                    <tr class="border-t">
-                        <td class="px-4 py-2">2025-09-26</td>
-                        <td class="px-4 py-2">08:01</td>
-                        <td class="px-4 py-2">WFH</td>
-                        <td class="px-4 py-2 text-green-600 font-semibold">Hadir</td>
-                    </tr>
+                    @forelse ($attendances as $absen)
+                        <tr class="border-t">
+                            <td class="px-4 py-2">{{ $absen->tanggal }}</td>
+                            <td class="px-4 py-2">{{ $absen->jam }}</td>
+                            <td class="px-4 py-2">{{ $absen->jenis }}</td>
+                            <td class="px-4 py-2">{{ $absen->lokasi }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="px-4 py-2 text-center text-gray-500">
+                                Belum ada data absensi
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
+
             </table>
         </div>
     </div>

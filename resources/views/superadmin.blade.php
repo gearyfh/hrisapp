@@ -29,7 +29,7 @@
         </a>
 
         <!-- Card Create Karyawan -->
-        <a href="" 
+        <a href="{{ route('users.index') }}" 
            class="bg-white shadow-md rounded-xl p-6 flex flex-col items-center justify-center hover:shadow-lg transition">
             <div class="bg-green-100 text-green-600 rounded-full p-4 mb-4">
                 <!-- Icon User -->

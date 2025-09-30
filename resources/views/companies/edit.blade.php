@@ -42,6 +42,48 @@
                    placeholder="Enter company name" required>
         </div>
 
+                        <!-- Company Address -->
+        <div>
+            <label for="company_address" class="block text-gray-700 font-semibold mb-1">
+                Company Address
+            </label>
+            <input type="text" name="company_address" id="company_address" 
+                   class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none" 
+                   placeholder="Enter company address" required>
+        </div>
+
+                <!-- Company Phone -->
+        <div>
+            <label for="company_phone" class="block text-gray-700 font-semibold mb-1">
+                Company Phone
+            </label>
+            <input type="text" name="company_phone" id="company_phone" 
+                   class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none" 
+                   placeholder="Enter company phone" required>
+        </div>
+
+                <!-- Company Name -->
+        <div>
+            <label for="company_email" class="block text-gray-700 font-semibold mb-1">
+                Company Email
+            </label>
+            <input type="email" name="company_email" id="company_email" 
+                   class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none" 
+                   placeholder="Enter company email" required>
+        </div>
+
+                    <!-- Hidden lat/lng fields -->
+    <input type="hidden" name="latitude" id="latitude">
+    <input type="hidden" name="longitude" id="longitude">
+
+    <!-- Map -->
+    <div class="mt-4">
+        <label class="block text-gray-700 font-semibold mb-1">
+            Select Location
+        </label>
+        <div id="map" class="w-full h-64 rounded-lg border"></div>
+    </div>
+
         <!-- Action Buttons -->
         <div class="flex justify-end space-x-3">
             <a href="{{ route('companies.index') }}"

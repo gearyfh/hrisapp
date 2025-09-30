@@ -33,7 +33,7 @@
             </label>
             <input type="text" name="company_code" id="company_code" 
                    class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none" 
-                   placeholder="Enter company code" required>
+                   placeholder="Enter company code | (Ex: XXX)" required>
         </div>
 
         <!-- Company Name -->

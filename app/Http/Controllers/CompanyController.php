@@ -23,9 +23,14 @@ class CompanyController extends Controller
         $request->validate([
             'company_code' => 'required|unique:companies,company_code|regex:/^[0-9]{3}$/', // hanya 3 digit angka
             'company_name' => 'required|string|max:255',
+            'company_address' => 'required|string|max:255',
+            'company_phone' => 'required|string|max:20',
+            'company_email' => 'required|email|max:255',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
         ]);
 
-        Company::create($request->only('company_code', 'company_name'));
+        Company::create($request->only('company_code', 'company_name', 'address', 'phone', 'email', 'latitude', 'longitude'));
 
         return redirect()->route('companies.index')->with('success', 'Company created successfully.');
     }
@@ -44,6 +49,11 @@ class CompanyController extends Controller
                 'unique:companies,company_code,' . $company->id, // abaikan kode miliknya sendiri
             ],
             'company_name' => 'required|string|max:255',
+            'company_address' => 'required|string|max:255',
+            'company_phone' => 'required|string|max:20',
+            'company_email' => 'required|email|max:255',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
         ]);
 
         $company->update($validated);

@@ -38,6 +38,7 @@ class UserSeeder extends Seeder
         'birth_date' => '2000-01-01',
         'nik' => '123456789',
         'hire_date' => now(),
+        'user_id' => 1
     ]);
 
     User::create([
@@ -46,7 +47,7 @@ class UserSeeder extends Seeder
         'password' => Hash::make('12345'),
         'role' => 'employee',
         'company_id' => 1,
-        'employee_id' => 1
+        //'employee_id' => 1
     ]);
 
 

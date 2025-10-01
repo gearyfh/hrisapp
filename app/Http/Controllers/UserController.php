@@ -8,6 +8,7 @@ use App\Models\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -28,53 +29,51 @@ class UserController extends Controller
 
     // Store user
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'company_name'  => 'required|exists:companies,company_name',
-            'name'        => 'required|string|max:255',
-            'birth_date'  => 'nullable|date',
-            'email'       => 'required|email|unique:users,email',
-            'password'    => 'required|min:6',
-            'role'        => 'required|in:employee,admin,superadmin',
-            'status'     => 'nullable|in:active,inactive',
-            'address'    => 'nullable|string',
-            'phone'      => 'nullable|string',
-            'nik'        => 'nullable|string',
-            'npwp'       => 'nullable|string',
-            'hire_date'  => 'nullable|date',
-        ]);
+{
+    $validated = $request->validate([
+        'company_name'  => 'required|exists:companies,company_name',
+        'name'        => 'required|string|max:255',
+        'birth_date'  => 'nullable|date',
+        'email'       => 'required|email|unique:users,email',
+        'password'    => 'required|min:6',
+        'role'        => 'required|in:employee,admin,superadmin',
+        'status'      => 'nullable|in:active,inactive',
+        'address'     => 'nullable|string',
+        'phone'       => 'nullable|string',
+        'nik'         => 'nullable|string',
+        'npwp'        => 'nullable|string',
+        'hire_date'   => 'nullable|date',
+    ]);
 
+    DB::transaction(function () use ($validated, $request) {
+        // 1. Buat user
         $user = User::create([
-            'name'        => $validated['name'],
-            'email'       => $validated['email'],
-            'password'    => Hash::make($validated['password']),
-            'role'        => $validated['role'],
+            'name'     => $validated['name'],
+            'email'    => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'role'     => $validated['role'],
         ]);
 
-            // 2. Jika role employee → buat juga di tabel employees
-    if ($request->role === 'employee') {
+        // 2. Kalau role employee → buat juga employee
+        if ($request->role === 'employee') {
+            $company = Company::where('company_name', $validated['company_name'])->first();
 
-         $company = Company::where('company_name', $validated['company_name'])->first();
+            $employee = Employee::create([
+                'company_id' => $company->id,
+                'user_id'    => $user->id,
+                'name'       => $user->name,
+                'birth_date' => $validated['birth_date'] ?? null,
+                'address'    => $validated['address'] ?? null,
+                'nik'        => $validated['nik'] ?? null,
+                'npwp'       => $validated['npwp'] ?? null,
+                'hire_date'  => $validated['hire_date'] ?? null,
+                'status'     => $validated['status'] ?? 'active',
+            ]);
+        }
+    });
 
-        $employee = Employee::create([
-        'id'         => $user->id,  // share ID sama dengan user
-        'company_id' => $company->id,
-        'name'       => $user->name,
-        'birth_date' => $validated['birth_date'] ?? null,
-        'address'    => $validated['address'] ?? null,
-        'nik'        => $validated['nik'] ?? null,
-        'npwp'       => $validated['npwp'] ?? null,
-        'hire_date'  => $validated['hire_date'] ?? null,
-        'status'     => $validated['status'] ?? 'active',
-        ]);
-
-        // Update user supaya ada relasi employee_id
-        $user->update(['employee_id' => $employee->employee_id]);
-    }
-
-
-        return redirect()->route('users.index')->with('success', 'User berhasil dibuat!');
-    }
+    return redirect()->route('users.index')->with('success', 'User berhasil dibuat!');
+}
 
      public function edit($id)
     {
@@ -85,33 +84,34 @@ class UserController extends Controller
     // ambil semua companies buat dropdown
     $companies = \App\Models\Company::all();
     $employee = $user->employee; // bisa null kalau bukan employee
-
+    //dd($user,$employee);
     return view('users.edit', compact('user', 'companies', 'employee'));
 }
 
         public function update(Request $request, User $user)
     {
+       // $user = User::with('company', 'employee')->findOrFail($id);
+
+        $emailRules = ['required', 'email'];
+        dd($user,$request->email,$user->email);
+        if ($request->email !== $user->email) {
+            $emailRules[] = Rule::unique('users', 'email');
+        }
+
         $validated = $request->validate([
-            'name'        => 'required|string|max:255',
-            'email'       => [
-                'required',
-                'email',
-                Rule::unique('users', 'email')->ignore($user->id)
-            ],
-            'password'    => 'nullable|string|min:6',
-            'company_name'=> 'required|string',
-            'role'        => 'required|in:employee,admin,superadmin',
-            'status'      => 'required|in:active,inactive',
-
-            // khusus employee
-            'birth_date'  => 'nullable|date',
-            'address'     => 'nullable|string',
-            'phone'       => 'nullable|string',
-            'nik'         => 'nullable|string',
-            'npwp'        => 'nullable|string',
-            'hire_date'   => 'nullable|date',
+            'name' => 'required|string|max:255',
+            'email' => $emailRules,
+            'password' => 'nullable|string|min:6',
+            'company_name' => 'required|string',
+            'role' => 'required|in:employee,admin,superadmin',
+            'status' => 'required|in:active,inactive',
+            'birth_date' => 'nullable|date',
+            'address' => 'nullable|string',
+            'phone' => 'nullable|string',
+            'nik' => 'nullable|string',
+            'npwp' => 'nullable|string',
+            'hire_date' => 'nullable|date',
         ]);
-
 
         // ambil company_id dari company_name
         $company = Company::where('company_name', $validated['company_name'])->firstOrFail();
@@ -132,6 +132,7 @@ class UserController extends Controller
                 ['id' => $user->id], // share ID dengan users
                 [
                     'company_id' => $company->id,
+                    'user_id' => $user->id,
                     'name'       => $validated['name'],
                     'birth_date' => $validated['birth_date'] ?? null,
                     'address'    => $validated['address'] ?? null,

@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id(); // pakai user_id biar sesuai ERD
             $table->foreignId('company_id')->nullable()->constrained('companies')->onDelete('cascade');
-            $table->foreignId('employee_id')->nullable()->constrained('employees')->onDelete('cascade');
+            //$table->foreignId('employee_id')->nullable()->constrained('employees')->onDelete('cascade');
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();

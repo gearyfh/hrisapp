@@ -8,15 +8,16 @@ class Employee extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'company_id',
-        'name',
-        'birth_date',
-        'address',
-        'phone',
-        'nik',
-        'npwp',
-        'hire_date',
-        'status',
+            'id',
+            'company_id',
+            'name',
+            'birth_date',
+            'address',
+            'phone',
+            'nik',
+            'npwp',
+            'hire_date',
+            'status',
     ];
 
     public function company()
@@ -26,6 +27,6 @@ class Employee extends Model
 
     public function user()
     {
-        return $this->hasOne(User::class, 'employee_id', 'id');
+        return $this->belongsTo(User::class, 'id', 'id');
     }
 }

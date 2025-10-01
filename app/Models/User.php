@@ -26,7 +26,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
-        'status',
+        'birth_date',
     ];
 
         public function company()
@@ -36,7 +36,7 @@ class User extends Authenticatable
 
     public function employee()
     {
-        return $this->belongsTo(Employee::class, 'employee_id', 'id');
+        return $this->hasOne(Employee::class, 'id', 'id');
     }
 
     /**
@@ -57,4 +57,15 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+        protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($user) {
+            // Hapus employee kalau ada
+            $user->employee()->delete();
+        });
+    }
+
 }

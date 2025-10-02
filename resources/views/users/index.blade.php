@@ -59,7 +59,7 @@
                             </span>
                         @endif
                     </td>
-                    <td class="p-3">{{ $user->company->name ?? '-' }}</td>
+                    <td class="p-3">{{ $user->company->name ?? '' }}</td>
                     <td class="p-3 text-center"><a href="{{ route('users.edit', $user->id) }}" 
                            class="inline-block bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded-lg text-sm shadow transition">
                             Edit

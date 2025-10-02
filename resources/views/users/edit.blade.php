@@ -44,8 +44,8 @@
                    placeholder="Enter new password (leave blank to keep current)">
         </div>
 
-        {{-- Company --}}
-        <select name="company_name" class="w-full border rounded p-2" required>
+        <div class="mb-3">
+            <select name="company_name" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none" required>
             <option value="">-- Pilih Company --</option>
             @foreach($companies as $company)
                 <option value="{{ $company->company_name }}" 
@@ -54,30 +54,45 @@
                 </option>
             @endforeach
         </select>
+        </div>
+        {{-- Company --}}
+        
 
-
+    <div class="mb-3">
         {{-- Role --}}
-        <select id="role" name="role" class="w-full border rounded p-2" required>
-            <option value="employee" {{ old('role', $user->role) == 'employee' ? 'selected' : '' }}>Employee</option>
-            <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
-            <option value="superadmin" {{ old('role', $user->role) == 'superadmin' ? 'selected' : '' }}>Super Admin</option>
-        </select>
+            <select id="role" name="role" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none" required>
+                <option value="employee" {{ old('role', $user->role) == 'employee' ? 'selected' : '' }}>Employee</option>
+                <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
+                <option value="superadmin" {{ old('role', $user->role) == 'superadmin' ? 'selected' : '' }}>Super Admin</option>
+            </select>
+    </div>
+        
 
 
-        {{-- Status --}}
-        <select name="status" class="w-full border rounded p-2">
-            <option value="active" {{ old('status', $user->status) == 'active' ? 'selected' : '' }}>Active</option>
-            <option value="inactive" {{ old('status', $user->status) == 'inactive' ? 'selected' : '' }}>Inactive</option>
-        </select>
 
 
         {{-- Bagian khusus Employee --}}
         <div id="employee-fields" class="hidden">
+                            @php
+            $currentStatus = old('status', $user->role === 'employee' && $user->employee 
+                ? $user->employee->status 
+                : $user->status);
+        @endphp
+
+        {{-- Status --}}
+        <div class="mb-3">
+            <select name="status" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">
+            <option value="active" {{ $currentStatus == 'active' ? 'selected' : ''  }}>Active</option>
+            <option value="inactive" {{ $currentStatus == 'inactive' ? 'selected' : '' }}>Inactive</option>
+        </select>
+        </div>
+        
+
             {{-- Birth Date --}}
             <div class="mb-3">
                 <label for="birth_date" class="form-label">Tanggal Lahir</label>
                 <input type="date" name="birth_date" id="birth_date"
-                   value="{{ old('birth_date', $employee->birth_date) }}"
+                   value="{{ old('birth_date', $user->employee->birth_date ?? '') }}"
                    class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                    placeholder="Enter birth date" required>
             </div>
@@ -85,14 +100,14 @@
             {{-- Address --}}
                 <div class="mb-3">
                     <label class="block font-semibold">Alamat</label>
-                    <textarea name="address" class="w-full border rounded p-2">{{ old('address', $employee->address) }}</textarea>
+                    <textarea name="address" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">{{ old('address', $user->employee->address ?? '') }}</textarea>
                 </div>
 
             {{-- Phone --}}
             <div class="mb-3">
                 <label class="block font-semibold">No. Telepon</label>
                 <input type="text" name="phone" id="phone"
-                   value="{{ old('phone', $employee->phone) }}"
+                   value="{{ old('phone', $user->employee->phone ?? '') }}"
                    class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                    placeholder="Enter phone number" required>
             </div>
@@ -101,7 +116,7 @@
             <div class="mb-3">
                 <label class="block font-semibold">NIK</label>
                 <input type="text" name="nik" id="nik"
-                   value="{{ old('nik', $employee->nik) }}"
+                   value="{{ old('nik', $user->employee->nik ?? '') }}"
                    class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                    placeholder="Enter NIK">
             </div>
@@ -110,7 +125,7 @@
             <div class="mb-3">
                 <label class="block font-semibold">NPWP</label>
                 <input type="text" name="npwp" id="npwp"
-                   value="{{ old('npwp', $employee->npwp) }}"
+                   value="{{ old('npwp', $user->employee->npwp ?? '') }}"
                    class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                    placeholder="Enter NPWP">
             </div>
@@ -119,21 +134,32 @@
             <div class="mb-3">
                 <label class="block font-semibold">Tanggal Masuk</label>
                 <input type="date" name="hire_date" id="hire_date"
-                   value="{{ old('hire_date', $employee->hire_date) }}"
+                   value="{{ old('hire_date', $user->employee->hire_date ?? '') }}"
                    class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                    placeholder="Enter hire date" required>
             </div>
         </div>
 
         {{-- Buttons --}}
-        <a href="{{ route('users.index') }}" 
+
+                <div class="flex justify-end space-x-3">
+            <a href="{{ route('users.index') }}"
+               class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg shadow transition">
+                Cancel
+            </a>
+            <button type="submit"
+                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow transition">
+                Update
+            </button>
+        </div>
+        {{-- <a href="{{ route('users.index') }}" 
            class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg shadow transition">
             Cancel
         </a>
 
         <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">
             Simpan
-        </button>
+        </button> --}}
     </form>
 </div>
 

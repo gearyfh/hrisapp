@@ -40,7 +40,11 @@ class UserController extends Controller
         'status'      => 'nullable|in:active,inactive',
         'address'     => 'nullable|string',
         'phone'       => 'nullable|string',
-        'nik'         => 'nullable|string',
+        'nik'         => [
+        'nullable',
+        'digits:16', // harus tepat 16 digit jika diisi
+        'unique:employees,nik', // harus unique
+    ],
         'npwp'        => 'nullable|string',
         'hire_date'   => 'nullable|date',
     ]);
@@ -88,19 +92,21 @@ class UserController extends Controller
     return view('users.edit', compact('user', 'companies', 'employee'));
 }
 
-        public function update(Request $request, User $user)
+        public function update(Request $request, $id)
     {
-       // $user = User::with('company', 'employee')->findOrFail($id);
+        $user = User::findOrFail($id);
 
-        $emailRules = ['required', 'email'];
-        dd($user,$request->email,$user->email);
-        if ($request->email !== $user->email) {
-            $emailRules[] = Rule::unique('users', 'email');
-        }
+        // $emailRules = ['required', 'email'];
 
+        // if ($request->email !== $user->email) {
+        //     $emailRules[] = Rule::unique('users', 'email');
+        // }
+        // dd($user);
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => $emailRules,
+            'email' => ['required',
+        'email',
+        Rule::unique('users')->ignore($user->id)],
             'password' => 'nullable|string|min:6',
             'company_name' => 'required|string',
             'role' => 'required|in:employee,admin,superadmin',
@@ -108,7 +114,11 @@ class UserController extends Controller
             'birth_date' => 'nullable|date',
             'address' => 'nullable|string',
             'phone' => 'nullable|string',
-            'nik' => 'nullable|string',
+            'nik' => [
+            'nullable',
+            'digits:16', // harus tepat 16 angka
+            Rule::unique('employees', 'nik')->ignore(optional($user->employee)->id), 
+        ],
             'npwp' => 'nullable|string',
             'hire_date' => 'nullable|date',
         ]);
@@ -127,22 +137,22 @@ class UserController extends Controller
         ]);
 
         // kalau role employee, update/insert ke employees
-        if ($validated['role'] === 'employee') {
-            Employee::updateOrCreate(
-                ['id' => $user->id], // share ID dengan users
-                [
-                    'company_id' => $company->id,
-                    'user_id' => $user->id,
-                    'name'       => $validated['name'],
-                    'birth_date' => $validated['birth_date'] ?? null,
-                    'address'    => $validated['address'] ?? null,
-                    'phone'      => $validated['phone'] ?? null,
-                    'nik'        => $validated['nik'] ?? null,
-                    'npwp'       => $validated['npwp'] ?? null,
-                    'hire_date'  => $validated['hire_date'] ?? null,
-                    'status'     => $validated['status'],
-                ]
-            );
+            if ($validated['role'] === 'employee') {
+                Employee::updateOrCreate(
+                    ['user_id' => $user->id], // share ID dengan users
+                    [
+                        'company_id' => $company->id,
+                        'user_id' => $user->id,
+                        'name'       => $validated['name'],
+                        'birth_date' => $validated['birth_date'] ?? null,
+                        'address'    => $validated['address'] ?? null,
+                        'phone'      => $validated['phone'] ?? null,
+                        'nik'        => $validated['nik'] ?? null,
+                        'npwp'       => $validated['npwp'] ?? null,
+                        'hire_date'  => $validated['hire_date'] ?? null,
+                        'status'     => $validated['status'],
+                    ]
+                );
         } else {
             // kalau bukan employee, pastikan tidak ada sisa data employee
             $user->employee()?->delete();

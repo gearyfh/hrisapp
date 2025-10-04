@@ -15,6 +15,12 @@ return new class extends Migration
     {
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('employee_id')->constrained('employees')->onDelete('cascade');
+            $table->enum('jenis', ['WFH', 'WFO']);
+            $table->date('tanggal');
+            $table->time('jam_masuk');
+            $table->time('jam_keluar')->nullable();
+            $table->string('lokasi')->nullable();
             $table->timestamps();
         });
     }

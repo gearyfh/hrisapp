@@ -20,25 +20,25 @@
         {{-- Name --}}
         <div class="mb-3">
             <label class="block font-semibold">Nama</label>
-            <input type="text" name="name" class="w-full border rounded p-2" required>
+            <input type="text" name="name" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none" required>
         </div>
 
         {{-- Email --}}
         <div class="mb-3">
             <label class="block font-semibold">Email</label>
-            <input type="email" name="email" class="w-full border rounded p-2" required>
+            <input type="email" name="email" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none" required>
         </div>
 
         {{-- Password --}}
         <div class="mb-3">
             <label class="block font-semibold">Password</label>
-            <input type="password" name="password" class="w-full border rounded p-2" required>
+            <input type="password" name="password" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none" required>
         </div>
 
         {{-- Company --}}
         <div class="mb-3">
             <label class="block font-semibold">Company</label>
-            <select name="company_name" class="w-full border rounded p-2" required>
+            <select name="company_name" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none" required>
                 <option value="">-- Pilih Company --</option>
                 @foreach($companies as $company)
                     <option value="{{ $company->company_name }}">{{ $company->company_name }}</option>
@@ -49,7 +49,7 @@
         {{-- Role --}}
         <div class="mb-3">
             <label class="block font-semibold">Role</label>
-            <select id="role" name="role" class="w-full border rounded p-2" required>
+            <select id="role" name="role" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none" required>
                 <option value="employee">Employee</option>
                 <option value="admin">Admin</option>
                 <option value="superadmin">Super Admin</option>
@@ -59,7 +59,7 @@
         {{-- Status --}}
         <div class="mb-3">
             <label class="block font-semibold">Status</label>
-            <select name="status" class="w-full border rounded p-2">
+            <select name="status" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">
                 <option value="active" selected>Active</option>
                 <option value="inactive">Inactive</option>
             </select>
@@ -70,51 +70,51 @@
             {{-- Birth Date --}}
             <div class="mb-3">
                 <label for="birth_date" class="form-label">Tanggal Lahir</label>
-                <input type="date" class="form-control w-full border rounded p-2" id="birth_date" name="birth_date">
+                <input type="date" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none  " id="birth_date" name="birth_date">
             </div>
 
             {{-- Address --}}
             <div class="mb-3">
                 <label class="block font-semibold">Alamat</label>
-                <textarea name="address" class="w-full border rounded p-2"></textarea>
+                <textarea name="address" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"></textarea>
             </div>
 
             {{-- Phone --}}
             <div class="mb-3">
                 <label class="block font-semibold">No. Telepon</label>
-                <input type="text" name="phone" class="w-full border rounded p-2">
+                <input type="text" name="phone" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">
             </div>
 
             {{-- NIK --}}
             <div class="mb-3">
                 <label class="block font-semibold">NIK</label>
-                <input type="text" name="nik" class="w-full border rounded p-2">
+                <input type="text" name="nik" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">
             </div>
 
             {{-- NPWP --}}
             <div class="mb-3">
                 <label class="block font-semibold">NPWP</label>
-                <input type="text" name="npwp" class="w-full border rounded p-2">
+                <input type="text" name="npwp" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">
             </div>
 
             {{-- Hire Date --}}
             <div class="mb-3">
                 <label class="block font-semibold">Tanggal Masuk</label>
-                <input type="date" name="hire_date" class="w-full border rounded p-2">
+                <input type="date" name="hire_date" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">
             </div>
         </div>
 
         {{-- Buttons --}}
-        <a href="{{ route('users.index') }}" 
-           class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg shadow transition">
-            Cancel
-        </a>
-
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">
-            Simpan
-        </button>
-    </form>
-</div>
+                <div class="flex justify-end space-x-3">
+            <a href="{{ route('users.index') }}"
+               class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg shadow transition">
+                Cancel
+            </a>
+            <button type="submit"
+                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow transition">
+                Create
+            </button>
+        </div>
 
 {{-- Script untuk toggle --}}
 <script>

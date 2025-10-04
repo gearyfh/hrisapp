@@ -6,7 +6,7 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         {{-- Check In / Check Out --}}
-        <div class="bg-gray-100 p-6 rounded-lg shadow">
+        {{-- <div class="bg-gray-100 p-6 rounded-lg shadow">
             <h2 class="text-lg font-semibold mb-4 text-center">Check In</h2>
             <hr class="mb-4">
 
@@ -25,7 +25,43 @@
                     </button>
                 </a>
             </div>
+        </div> --}}
+
+        <div class="bg-gray-100 p-6 rounded-lg shadow">
+    {{-- Check In --}}
+    <div class="bg-gray-100 p-6 rounded-lg shadow">
+        <h2 class="text-lg font-semibold mb-4 text-center">Check In</h2>
+        <hr class="mb-4">
+
+        <p class="text-center text-gray-600">
+            {{ \Carbon\Carbon::now()->format('l, d M Y') }}
+        </p>
+        <p class="text-center text-3xl font-bold my-4">
+            {{ \Carbon\Carbon::now()->format('H:i') }}
+        </p>
+
+        <div class="flex justify-center">
+                @if(!$attendance)
+            {{-- Belum Check In --}}
+            <form action="{{ route('employees.absensi') }}" method="POST">
+                @csrf
+                <button type="submit" class="bg-black text-white px-6 py-2 rounded-full hover:bg-gray-800">
+                    Check In
+                </button>
+            </form>
+        @else
+            {{-- Sudah Check In → tampilkan tombol Check Out --}}
+            <form action="{{ route('employees.absensi') }}" method="POST">
+                @csrf
+                <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded-full hover:bg-red-800">
+                    Check Out
+                </button>
+            </form>
+        @endif
         </div>
+    </div>
+</div>
+
 
         {{-- History --}}
         <div class="bg-gray-100 p-6 rounded-lg shadow">

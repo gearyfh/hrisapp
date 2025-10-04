@@ -15,7 +15,7 @@
             </div>
         @endif
 
-        <form action="{{ route('employees.absensi_store') }}" method="POST" class="space-y-4">
+        <form action="{{ route('employees.checkin') }}" method="POST" class="space-y-4">
             @csrf
 
             {{-- Jenis Absensi (WFH / WFO) --}}

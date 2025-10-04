@@ -33,6 +33,7 @@ class UserSeeder extends Seeder
     ]);
 
     Employee::create([
+        'user_id' => 1,
         'company_id' => 1,
         'name' => 'Employee One',
         'birth_date' => '2000-01-01',

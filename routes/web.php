@@ -68,15 +68,31 @@ Route::middleware(['auth', 'role:superadmin'])->group(function () {
 //     Route::resource('companies', CompanyController::class);
 // });
 
-Route::middleware(['auth', 'role:employee'])->group(function () {
-    Route::get('/employees/absensi', [AbsensiController::class, 'index'])
-        ->name('employees.absensi');
-    Route::get('/employees/absensi/create', [AbsensiController::class, 'create'])
-        ->name('employees.absensi_create');
-    Route::post('/employees/absensi', [AbsensiController::class, 'store'])
-    ->name('employees.absensi_store');
+// Route::middleware(['auth', 'role:employee'])->group(function () {
+//     Route::get('/employees/absensi', [AbsensiController::class, 'index'])
+//         ->name('employees.absensi');
+//     Route::get('/employees/absensi/create', [AbsensiController::class, 'create'])
+//         ->name('employees.absensi_create');
+//     Route::post('/employees/absensi', [AbsensiController::class, 'store'])
+//     ->name('employees.absensi_store');
 
-});
+// });
+
+
+
+
+// Halaman absensi utama
+Route::get('/employees/absensi', [AbsensiController::class, 'index'])->name('employees.absensi');
+
+// Form manual create (opsional, bisa dipakai atau dihapus)
+Route::get('/employees/absensi/create', [AbsensiController::class, 'create'])->name('employees.absensi_create');
+
+// Proses Check-in
+Route::post('/employees/absensi/checkin', [AbsensiController::class, 'checkIn'])->name('employees.checkin');
+
+// Proses Check-out
+Route::post('/employees/absensi/checkout', [AbsensiController::class, 'checkOut'])->name('employees.checkout');
+
 
 Route::get('/users', [UserController::class, 'index'])->name('users.index');
 Route::get('/users/create', [UserController::class, 'create'])->name('users.create');

@@ -31,17 +31,17 @@
             {{-- Tanggal --}}
             <div>
                 <label class="block font-medium mb-1">Tanggal</label>
-                <input type="date" name="tanggal" 
-                       value="{{ old('tanggal', \Carbon\Carbon::now()->toDateString()) }}"
-                       class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-400" required>
+                <input type="date" name="tanggal_masuk" 
+                       value="{{ old('tanggal_masuk', \Carbon\Carbon::now()->toDateString()) }}"
+                       class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-400" disabled>
             </div>
 
             {{-- Jam --}}
             <div>
                 <label class="block font-medium mb-1">Jam</label>
-                <input type="time" name="jam"
-                       value="{{ old('jam', \Carbon\Carbon::now()->format('H:i')) }}"
-                       class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-400" required>
+                <input type="time" name="jam_masuk"
+                       value="{{ old('jam_masuk', \Carbon\Carbon::now()->format('H:i')) }}"
+                       class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-400" disabled>
             </div>
 
             {{-- Lokasi --}}

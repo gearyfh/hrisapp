@@ -32,17 +32,7 @@ class UserSeeder extends Seeder
         'company_id' => 1
     ]);
 
-    Employee::create([
-        'user_id' => 1,
-        'company_id' => 1,
-        'name' => 'Employee One',
-        'birth_date' => '2000-01-01',
-        'nik' => '123456789',
-        'hire_date' => now(),
-        'user_id' => 1
-    ]);
-
-    User::create([
+        User::create([
         'name' => 'Employee User',
         'email' => 'employee@mail.com',
         'password' => Hash::make('12345'),
@@ -50,6 +40,18 @@ class UserSeeder extends Seeder
         'company_id' => 1,
         //'employee_id' => 1
     ]);
+
+    Employee::create([
+        'id' => 3,
+        'company_id' => 1,
+        'name' => 'Employee One',
+        'birth_date' => '2000-01-01',
+        'nik' => '123456789',
+        'hire_date' => now(),
+        'user_id' => 3
+    ]);
+
+
 
 
     }

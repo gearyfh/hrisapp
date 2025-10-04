@@ -30,20 +30,43 @@
         <div class="bg-gray-100 p-6 rounded-lg shadow">
     {{-- Check In --}}
     <div class="bg-gray-100 p-6 rounded-lg shadow">
-        <h2 class="text-lg font-semibold mb-4 text-center">Check In</h2>
+        <div>
+                    <h2 class="text-lg font-semibold mb-4">Check In</h2>
         <hr class="mb-4">
 
         <p class="text-center text-gray-600">
-            {{ \Carbon\Carbon::now()->format('l, d M Y') }}
-        </p>
+    {{ $attendance ? \Carbon\Carbon::parse($attendance->tanggal_masuk)->format('l, d M Y') : \Carbon\Carbon::now()->format('l, d M Y') }}
+</p>
+
         <p class="text-center text-3xl font-bold my-4">
-            {{ \Carbon\Carbon::now()->format('H:i') }}
+            @if($attendance && $attendance->jam_masuk)
+                {{ \Carbon\Carbon::parse($attendance->jam_masuk)->format('H:i') }}
+            @else
+                {{ \Carbon\Carbon::now()->format('H:i') }}
+            @endif
         </p>
+
+        <h2 class="text-lg font-semibold mb-4">Check In</h2>
+        <hr class="mb-4">
+
+        <p class="text-center text-gray-600">
+    {{ $attendance ? \Carbon\Carbon::parse($attendance->tanggal)->format('l, d M Y') : \Carbon\Carbon::now()->format('l, d M Y') }}
+</p>
+
+<p class="text-center text-3xl font-bold my-4">
+    @if($attendance && $attendance->jam_keluar)
+        {{ \Carbon\Carbon::parse($attendance->keluar)->format('H:i') }}
+    @else
+        {{ \Carbon\Carbon::now()->format('H:i') }}
+    @endif
+</p>
+        </div>
+
 
         <div class="flex justify-center">
                 @if(!$attendance)
             {{-- Belum Check In --}}
-            <form action="{{ route('employees.absensi') }}" method="POST">
+            <form action="{{ route('employees.absensi_create') }}" method="GET">
                 @csrf
                 <button type="submit" class="bg-black text-white px-6 py-2 rounded-full hover:bg-gray-800">
                     Check In
@@ -51,7 +74,7 @@
             </form>
         @else
             {{-- Sudah Check In → tampilkan tombol Check Out --}}
-            <form action="{{ route('employees.absensi') }}" method="POST">
+            <form action="{{ route('employees.checkout') }}" method="POST">
                 @csrf
                 <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded-full hover:bg-red-800">
                     Check Out
@@ -78,8 +101,8 @@
                 <tbody>
                     @forelse ($attendances as $absen)
                         <tr class="border-t">
-                            <td class="px-4 py-2">{{ $absen->tanggal }}</td>
-                            <td class="px-4 py-2">{{ $absen->jam }}</td>
+                            <td class="px-4 py-2">{{ $absen->tanggal_masuk }}</td>
+                            <td class="px-4 py-2">{{ $absen->jam_masuk }}</td>
                             <td class="px-4 py-2">{{ $absen->jenis }}</td>
                             <td class="px-4 py-2">{{ $absen->lokasi }}</td>
                         </tr>

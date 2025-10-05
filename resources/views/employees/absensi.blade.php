@@ -51,7 +51,7 @@
             </form>
         @else
             {{-- Sudah Check In → tampilkan tombol Check Out --}}
-            <form action="{{ route('employees.absensi') }}" method="POST">
+            <form action="{{ route('employees.checkout') }}" method="POST">
                 @csrf
                 <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded-full hover:bg-red-800">
                     Check Out

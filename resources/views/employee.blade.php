@@ -13,15 +13,31 @@
         <!-- Absensi Hari Ini -->
         <div class="bg-white shadow-md rounded-lg p-6">
             <h2 class="text-lg font-semibold mb-2">Absensi Hari Ini</h2>
+            @if(!$attendance)
             <p class="text-gray-600 mb-4">
-                Status: <span class="font-bold text-green-600">Belum Check In</span>
+                Status: <span class="font-bold text-red-600">Belum Check In</span>
             </p>
-            <a href="{{ route('employees.absensi_create') }}" 
+            <form action="{{ route('employees.absensi_create') }}" method="GET">
+                @csrf
+                <button type="submit" class="bg-black text-white px-6 py-2 rounded w-full hover:bg-gray-800"">
+                    Check In
+                </button>
+            </form>
+            @else
+                <p class="text-gray-600 mb-4">
+                    Status: <span class="font-bold text-green-600">Sudah Check In</span>
+                </p>
+            @csrf
+                <button type="submit" class="bg-gray-500 text-white px-6 py-2 rounded w-full cursor-not-allowed">
+                    Check In
+                </button>
+            @endif
+            {{-- <a href="{{ route('employees.absensi_create') }}" 
                 <button type="submit"
                     class="bg-black text-white px-6 py-2 rounded w-full hover:bg-gray-800">
                     Check In
                 </button>
-            </a>
+            </a> --}}
         </div>
 
         <!-- Sisa Cuti -->
@@ -50,18 +66,21 @@
                 <tr>
                     <th class="border p-2 text-left">Tanggal</th>
                     <th class="border p-2 text-left">Check In</th>
-                    <th class="border p-2 text-left">Check Out</th>
+                    <th class="border p-2 text-left">Lokasi</th>
                 </tr>
             </thead>
             <tbody>
+                 @forelse ($attendances as $absen)
                 <tr>
-                    <td class="border p-2"></td>
-                    <td class="border p-2"></td>
-                    <td class="border p-2"></td>
+                    <td class="border p-2">{{ $absen->tanggal_masuk }}</td>
+                    <td class="border p-2">{{ $absen->jam_masuk }}</td>
+                    <td class="border p-2">{{ $absen->lokasi }}</td>
                 </tr>
+                @empty
                 <tr>
                     <td colspan="3" class="border p-2 text-center text-gray-500">Belum ada data absensi</td>
                 </tr>
+                @endforelse
             </tbody>
         </table>
     </div>

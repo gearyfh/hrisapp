@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Attendance;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
+
+
+class EmployeeController extends Controller
+{
+    public function index()
+    {
+        $employee = Auth::user()->employee;
+
+        if (!$employee) {
+            return redirect()->back()->with('error', 'Anda bukan employee!');
+        }
+
+        $employeeId = $employee->id;
+
+        // Ambil absensi aktif (belum checkout)
+        $attendance = Attendance::where('employee_id', $employeeId)
+            ->whereNull('jam_keluar')
+            ->latest()
+            ->first();
+
+        // Ambil semua riwayat absensi
+        $attendances = Attendance::where('employee_id', $employeeId)
+            ->orderBy('tanggal_masuk', 'desc')
+            ->get();
+
+        return view('employee', compact('attendance', 'attendances'));
+    }
+}

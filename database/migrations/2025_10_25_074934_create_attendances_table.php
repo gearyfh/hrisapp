@@ -17,8 +17,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('employee_id')->constrained('employees')->onDelete('cascade');
             $table->enum('jenis', ['WFH', 'WFO']);
-            $table->date('tanggal');
+            $table->date('tanggal_masuk');
             $table->time('jam_masuk');
+            $table->date('tanggal_keluar')->nullable();
             $table->time('jam_keluar')->nullable();
             $table->string('lokasi')->nullable();
             $table->timestamps();

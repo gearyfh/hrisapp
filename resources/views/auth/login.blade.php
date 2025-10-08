@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | PT Maju Jaya Abadi</title>
+    <title>Login | PT </title>
     @vite('resources/css/app.css')
 </head>
 <body class="bg-gray-900 text-gray-100 min-h-screen flex items-center justify-center">

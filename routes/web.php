@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\DocumentController;
+
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -104,5 +106,13 @@ Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.e
 Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 Route::get('users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
 Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
+
+
+Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+// Route::post('/profile/update-password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
+
+
+
+Route::get('/document', [DocumentController::class, 'index'])->name('document.index');
 
 require __DIR__.'/auth.php';

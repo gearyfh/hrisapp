@@ -60,29 +60,34 @@
     <!-- History Absensi -->
     <div class="bg-white shadow-md rounded-lg p-6">
         <h2 class="text-lg font-semibold mb-4">History Absensi</h2>
-        
-        <table class="w-full border-collapse border">
-            <thead class="bg-gray-100">
-                <tr>
-                    <th class="border p-2 text-left">Tanggal</th>
-                    <th class="border p-2 text-left">Check In</th>
-                    <th class="border p-2 text-left">Lokasi</th>
-                </tr>
-            </thead>
-            <tbody>
-                 @forelse ($attendances as $absen)
-                <tr>
-                    <td class="border p-2">{{ $absen->tanggal_masuk }}</td>
-                    <td class="border p-2">{{ $absen->jam_masuk }}</td>
-                    <td class="border p-2">{{ $absen->lokasi }}</td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="3" class="border p-2 text-center text-gray-500">Belum ada data absensi</td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden">
+                <thead class="bg-gray-50 text-gray-700 uppercase text-sm">
+                    <tr>
+                        <th class="px-4 py-3 border-b text-left font-semibold">Tanggal</th>
+                        <th class="px-4 py-3 border-b text-left font-semibold">Check In</th>
+                        <th class="px-4 py-3 border-b text-left font-semibold">Jenis</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-700 text-sm divide-y divide-gray-100">
+                    @forelse ($attendances as $absen)
+                        <tr class="hover:bg-blue-50 transition">
+                            <td class="px-4 py-3">{{ $absen->tanggal_masuk }}</td>
+                            <td class="px-4 py-3">{{ $absen->jam_masuk }}</td>
+                            <td class="px-4 py-3">{{ $absen->jenis }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="3" class="text-center px-4 py-3 text-gray-500">
+                                Belum ada data absensi
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
+
 </div>
 @endsection

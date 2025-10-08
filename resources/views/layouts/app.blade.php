@@ -35,7 +35,7 @@
             {{-- Employee --}}
             @elseif(auth()->user()->role === 'employee')
                 <a href="{{ route('employees.absensi') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Absensi</a>
-                <a href="/dokumen" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Dokumen</a>
+                <a href="{{ route('document.index') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Dokumen</a>
             @endif
         </aside>
 
@@ -100,5 +100,6 @@
             });
         });
     </script>
+@yield('scripts')
 </body>
 </html>

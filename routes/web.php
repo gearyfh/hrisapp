@@ -109,7 +109,7 @@ Route::put('users/{user}', [UserController::class, 'update'])->name('users.updat
 
 
 Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
-// Route::post('/profile/update-password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
+Route::post('/profile/update-password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
 
 
 

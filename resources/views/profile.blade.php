@@ -49,33 +49,34 @@
         </div>
     @endif
 
-    {{-- <form method="POST" action="{{ route('profile.update-password') }}" class="space-y-4">
+    <!-- Form Ganti Password -->
+    <form method="POST" action="{{ route('profile.update-password') }}" class="space-y-4">
         @csrf
         <div>
             <label class="block text-gray-600 font-medium">Password Lama</label>
             <input type="password" name="current_password"
                    class="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring-2 focus:ring-blue-400"
-                   required>
+                   required placeholder="Masukkan password lama">
         </div>
 
         <div>
             <label class="block text-gray-600 font-medium">Password Baru</label>
             <input type="password" name="new_password"
                    class="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring-2 focus:ring-blue-400"
-                   required>
+                   required placeholder="Masukkan password baru">
         </div>
 
         <div>
             <label class="block text-gray-600 font-medium">Konfirmasi Password Baru</label>
             <input type="password" name="new_password_confirmation"
                    class="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring-2 focus:ring-blue-400"
-                   required>
+                   required placeholder="Ulangi password baru">
         </div>
 
         <button type="submit"
                 class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow-md transition">
             Simpan Perubahan
         </button>
-    </form> --}}
+    </form>
 </div>
 @endsection

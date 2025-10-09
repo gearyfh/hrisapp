@@ -6,19 +6,23 @@ use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
     /**
-     * Display the user's profile form.
+     * Menampilkan halaman profil pengguna.
      */
-     public function index()
+    public function index()
     {
         return view('profile');
     }
-    
+
+    /**
+     * Menampilkan form edit profil.
+     */
     public function edit(Request $request): View
     {
         return view('profile.edit', [
@@ -27,7 +31,7 @@ class ProfileController extends Controller
     }
 
     /**
-     * Update the user's profile information.
+     * Update informasi profil pengguna.
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
@@ -43,7 +47,31 @@ class ProfileController extends Controller
     }
 
     /**
-     * Delete the user's account.
+     * Ubah password pengguna.
+     */
+    public function updatePassword(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'current_password' => ['required'],
+            'new_password' => ['required', 'min:8', 'confirmed'],
+        ]);
+
+        $user = Auth::user();
+
+        // Cek apakah password lama benar
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'Password lama tidak sesuai.']);
+        }
+
+        // Update password baru
+     $user->password = Hash::make($request->new_password);
+    $user->save();
+
+        return back()->with('success', 'Password berhasil diubah.');
+    }
+
+    /**
+     * Hapus akun pengguna.
      */
     public function destroy(Request $request): RedirectResponse
     {

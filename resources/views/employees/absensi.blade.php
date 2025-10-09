@@ -76,24 +76,28 @@
         </div>
 
         {{-- History --}}
-        <div class="bg-gray-200 p-6 rounded-2xl shadow-lg w-full md:w-1/2 overflow-x-auto">
+        <div class="bg-gray-200 p-6 rounded-2xl shadow-lg w-full md:w-3/4 overflow-x-auto">
             <h2 class="text-lg font-semibold mb-4">History Absensi</h2>
 
             <table class="w-full border-collapse text-sm text-gray-700">
                 <thead class="bg-gray-300 text-gray-800">
                     <tr>
-                        <th class="px-4 py-2 text-left">Tanggal</th>
-                        <th class="px-4 py-2 text-left">Jam</th>
                         <th class="px-4 py-2 text-left">Jenis</th>
+                        <th class="px-4 py-2 text-left">Tanggal Masuk</th>
+                        <th class="px-4 py-2 text-left">Jam Masuk</th>
+                        <th class="px-4 py-2 text-left">Tanggal Keluar</th>
+                        <th class="px-4 py-2 text-left">Jam Keluar</th>
                         <th class="px-4 py-2 text-left">Lokasi</th>
                     </tr>
                 </thead>
                 <tbody class="bg-gray-100 divide-y divide-gray-300">
                     @forelse ($attendances as $absen)
                         <tr class="hover:bg-gray-200 transition">
+                            <td class="px-4 py-2">{{ $absen->jenis }}</td>
                             <td class="px-4 py-2">{{ $absen->tanggal_masuk }}</td>
                             <td class="px-4 py-2">{{ $absen->jam_masuk }}</td>
-                            <td class="px-4 py-2">{{ $absen->jenis }}</td>
+                            <td class="px-4 py-2">{{ $absen->tanggal_keluar }}</td>
+                            <td class="px-4 py-2">{{ $absen->jam_keluar }}</td>
                             <td class="px-4 py-2 truncate max-w-[250px]" title="{{ $absen->lokasi }}">{{ $absen->lokasi }}</td>
                         </tr>
                     @empty

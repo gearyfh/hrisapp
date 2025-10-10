@@ -19,6 +19,7 @@
             <h2 class="text-xl font-bold mb-6">Menu</h2>
 
             <a href="/dashboard" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Dashboard</a>
+            
 
             {{-- Superadmin --}}
             @if(auth()->user()->role === 'superadmin')

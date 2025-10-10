@@ -5,6 +5,10 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\LeaveController;
+use App\Http\Controllers\AttendanceCorrectionController;
+use App\Http\Controllers\OvertimeController;
+use App\Http\Controllers\ApprovalController;
 
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -114,5 +118,20 @@ Route::post('/profile/update-password', [ProfileController::class, 'updatePasswo
 
 
 Route::get('/document', [DocumentController::class, 'index'])->name('document.index');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/leave', [LeaveController::class, 'index'])->name('leave.index');
+    Route::get('/leave/cuti/create', [LeaveController::class, 'createCuti'])->name('leave.cuti.create');
+    Route::get('/leave/izin-sakit/create', [LeaveController::class, 'createIzinSakit'])->name('leave.izin_sakit.create');
+    Route::post('/leave', [LeaveController::class, 'store'])->name('leave.store');
+});
+
+
+
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
+    Route::get('/approvals', [ApprovalController::class, 'index'])->name('admin.approvals.index');
+    Route::post('/approvals/{id}', [ApprovalController::class, 'update'])->name('admin.approvals.update');
+});
+
 
 require __DIR__.'/auth.php';

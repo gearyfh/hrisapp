@@ -14,24 +14,17 @@ return new class extends Migration
     public function up()
     {
         Schema::create('overtime_requests', function (Blueprint $table) {
-            $table->id( );
-            $table->unsignedBigInteger('employee_id');
+            $table->id();
+            $table->foreignId('employee_id')->constrained('employees')->onDelete('cascade');
             $table->date('date');
             $table->time('start_time');
             $table->time('end_time');
+            $table->decimal('total_hours', 4, 2);
             $table->text('reason')->nullable();
-
-            // approval fields
-            $table->enum('approval_status', ['pending', 'approved', 'rejected'])->default('pending');
-            $table->unsignedBigInteger('approved_by')->nullable();
-            $table->timestamp('approved_at')->nullable();
-
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->timestamps();
-
-            // foreign keys
-            $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade');
-            $table->foreign('approved_by')->references('id')->on('users')->nullOnDelete();
         });
+
     }
 
     /**
@@ -41,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('overtime_requests');
+        //
     }
 };

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attendance;
+use App\Models\Employee;
+use App\Models\LeaveRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -31,6 +33,14 @@ class EmployeeController extends Controller
             ->orderBy('tanggal_masuk', 'desc')
             ->get();
 
-        return view('employee', compact('attendance', 'attendances'));
+           $leaves = LeaveRequest::with('leaveType')
+            ->where('employee_id', $employeeId)
+            ->latest()
+            ->take(10)
+            ->get();
+
+        return view('employee', compact('attendance', 'attendances', 'leaves'));
+
+
     }
 }

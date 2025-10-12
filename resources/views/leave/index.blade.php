@@ -11,10 +11,6 @@
                 + Ajukan Cuti
             </a>
 
-            <a href="{{ route('leave.izin_sakit.create') }}"
-               class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow-md transition">
-                + Ajukan Izin / Sakit
-            </a>
         </div>
     </div>
 
@@ -39,9 +35,14 @@
                 </tr>
             </thead>
             <tbody>
+                @php $no = 1; @endphp
                 @forelse($leaves as $leave)
+                @if($leave->leaveType->type != 'cuti')
+                    @continue
+                @endif
                     <tr class="border-b hover:bg-gray-50">
-                        <td class="p-3">{{ $loop->iteration }}</td>
+                        <td class="p-3">{{ $no++
+                         }}</td>
                         <td class="p-3">{{ $leave->leaveType->name ?? '-' }}</td>
                         <td class="p-3">{{ $leave->start_date }} - {{ $leave->end_date }}</td>
                         <td class="p-3">{{ $leave->total_days }} hari</td>

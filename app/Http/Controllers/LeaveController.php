@@ -24,6 +24,17 @@ class LeaveController extends Controller
         return view('leave.index', compact('leaves'));
     }
 
+    public function indexSick()
+    {
+        // Pastikan foreign key sesuai (user_id)
+        $leaves = LeaveRequest::with('leaveType')
+            ->where('employee_id', Auth::id())
+            ->latest()
+            ->get();
+
+        return view('sick.index', compact('leaves'));
+    }
+
     /**
      * Form pengajuan cuti
      */
@@ -39,7 +50,7 @@ class LeaveController extends Controller
     public function createIzinSakit()
     {
         $leaveTypes = LeaveType::where('type', 'izin_sakit')->get();
-        return view('leave.createizinsakit', compact('leaveTypes'));
+        return view('sick.createsick', compact('leaveTypes'));
     }
 
     /**
@@ -75,7 +86,7 @@ class LeaveController extends Controller
 
     // 🔍 Jika izin/sakit, cek lampiran
     $leaveType = LeaveType::find($request->leave_type_id);
-    if ($leaveType->type === 'izin_sakit' && !$request->hasFile('attachment')) {
+    if (strtolower($leaveType->name) === 'sakit' && !$request->hasFile('attachment')) {
         return back()->withErrors([
             'attachment' => 'Lampiran wajib diunggah untuk izin atau sakit.'
         ])->withInput();
@@ -95,7 +106,10 @@ class LeaveController extends Controller
         'attachment' => $request->file('attachment') ? $request->file('attachment')->store('attachments', 'public') : null,
     ]);
 
-    return redirect()->route('leave.index')->with('success', 'Pengajuan berhasil dikirim.');
+    if (strtolower($leaveType->name) === 'sakit' || strtolower($leaveType->name) === 'izin pribadi') {
+        return redirect()->route('sick.index')->with('success', 'Pengajuan berhasil dikirim.');
+    } else {
+        return redirect()->route('leave.index')->with('success', 'Pengajuan berhasil dikirim.');
+    }
 }
-
 }

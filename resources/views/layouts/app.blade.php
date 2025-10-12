@@ -37,6 +37,8 @@
             @elseif(auth()->user()->role === 'employee')
                 <a href="{{ route('employees.absensi') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Absensi</a>
                 <a href="{{ route('document.index') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Dokumen</a>
+                <a href="{{ route('sick.index') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Izin/Sakit</a>
+                <a href="{{ route('leave.index') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Cuti</a>
             @endif
         </aside>
 

@@ -122,8 +122,14 @@ Route::get('/document', [DocumentController::class, 'index'])->name('document.in
 Route::middleware('auth')->group(function () {
     Route::get('/leave', [LeaveController::class, 'index'])->name('leave.index');
     Route::get('/leave/cuti/create', [LeaveController::class, 'createCuti'])->name('leave.cuti.create');
-    Route::get('/leave/izin-sakit/create', [LeaveController::class, 'createIzinSakit'])->name('leave.izin_sakit.create');
+    // Route::get('/leave/izin-sakit/create', [LeaveController::class, 'createIzinSakit'])->name('leave.izin_sakit.create');
     Route::post('/leave', [LeaveController::class, 'store'])->name('leave.store');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/sick', [LeaveController::class, 'indexSick'])->name('sick.index');
+    Route::get('/sick/izin-sakit/create', [LeaveController::class, 'createIzinSakit'])->name('sick.createsick');
+    Route::post('/sick', [LeaveController::class, 'store'])->name('sick.store');
 });
 
 

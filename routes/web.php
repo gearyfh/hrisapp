@@ -9,6 +9,7 @@ use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\AttendanceCorrectionController;
 use App\Http\Controllers\OvertimeController;
 use App\Http\Controllers\ApprovalController;
+use App\Http\Controllers\AdminController;
 
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -58,13 +59,13 @@ Route::middleware(['auth'])->group(function () {
         return view('superadmin');
     })->middleware('role:superadmin');
 
-    Route::get('/admin', function () {
-        return view('admin');
-    })->middleware('role:admin');
+    // Route::get('/admin', function () {
+    //     return view('admin');
+    // })->middleware('role:admin');
 
     // Route::get('/employee', function () {
     //     return view('employee');
-
+    Route::get('/admin', [AdminController::class, 'index'])->name('admin')->middleware('role:admin');
     Route::get('/employee', [EmployeeController::class, 'index'])->name('employee')->middleware('role:employee');
 });
 
@@ -134,10 +135,33 @@ Route::middleware('auth')->group(function () {
 
 
 
+// Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
+//     Route::get('/approvals', [ApprovalController::class, 'index'])->name('admin.approvals.index');
+//     Route::post('/approvals/{id}', [ApprovalController::class, 'update'])->name('admin.approvals.update');
+    
+//     Route::post('/approvals/{id}/approve', [ApprovalController::class, 'approve'])->name('admin.approvals.approve');
+//     Route::post('/approvals/{id}/reject', [ApprovalController::class, 'reject'])->name('admin.approvals.reject');   
+// });
+
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
+    // Halaman utama approvals
     Route::get('/approvals', [ApprovalController::class, 'index'])->name('admin.approvals.index');
-    Route::post('/approvals/{id}', [ApprovalController::class, 'update'])->name('admin.approvals.update');
+
+    // Halaman khusus pengajuan CUTI
+    Route::get('/approvals/cuti', [ApprovalController::class, 'cuti'])->name('admin.approvals.cuti');
+    Route::get('/approvals/cuti/{id}', [ApprovalController::class, 'showCuti'])->name('admin.approvals.cuti.show');
+
+    // Halaman khusus pengajuan IZIN / SAKIT
+    Route::get('/approvals/izin-sakit', [ApprovalController::class, 'izinSakit'])->name('admin.approvals.izin_sakit');
+    Route::get('/approvals/izin-sakit/{id}', [ApprovalController::class, 'showIzinSakit'])->name('admin.approvals.izin_sakit.show');
+
+    // Update status
+    Route::post('/approvals/{id}/update', [ApprovalController::class, 'update'])->name('admin.approvals.update');
+    Route::post('/approvals/{id}/approve', [ApprovalController::class, 'approve'])->name('admin.approvals.approve');
+    Route::post('/approvals/{id}/reject', [ApprovalController::class, 'reject'])->name('admin.approvals.reject');
 });
+
+
 
 
 require __DIR__.'/auth.php';

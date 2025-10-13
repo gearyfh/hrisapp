@@ -21,8 +21,11 @@ return new class extends Migration
             $table->date('end_date');
             $table->integer('total_days');
             $table->text('reason')->nullable();
-              $table->string('attachment')->nullable(); // bukti izin/sakit
+            $table->string('attachment')->nullable(); // bukti izin/sakit
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->foreignId('approved_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->timestamp('approved_at')->nullable();
+            $table->text('comment')->nullable();
             $table->timestamps();
         });
 

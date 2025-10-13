@@ -39,7 +39,7 @@ class EmployeeController extends Controller
             ->take(10)
             ->get();
 
-        return view('employee', compact('attendance', 'attendances', 'leaves'));
+        return view('dashboard.employee', compact('attendance', 'attendances', 'leaves'));
 
 
     }

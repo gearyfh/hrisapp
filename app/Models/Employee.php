@@ -35,4 +35,10 @@ class Employee extends Model
     {
         return $this->hasMany(Attendance::class);
     }
+
+    public function documents()
+    {
+        return $this->hasMany(Document::class, 'employee_id');
+    }
+
 }

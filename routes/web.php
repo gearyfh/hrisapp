@@ -10,6 +10,7 @@ use App\Http\Controllers\AttendanceCorrectionController;
 use App\Http\Controllers\OvertimeController;
 use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminDocumentController;
 
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -54,17 +55,9 @@ Route::middleware(['auth'])->group(function () {
             return redirect('/employee');
         }
     });
-
     Route::get('/superadmin', function () {
         return view('superadmin');
     })->middleware('role:superadmin');
-
-    // Route::get('/admin', function () {
-    //     return view('admin');
-    // })->middleware('role:admin');
-
-    // Route::get('/employee', function () {
-    //     return view('employee');
     Route::get('/admin', [AdminController::class, 'index'])->name('admin')->middleware('role:admin');
     Route::get('/employee', [EmployeeController::class, 'index'])->name('employee')->middleware('role:employee');
 });
@@ -76,33 +69,6 @@ Route::middleware(['auth', 'role:superadmin'])->group(function () {
 // Route::middleware(['auth', 'role:admin'])->group(function () {
 //     Route::resource('companies', CompanyController::class);
 // });
-
-// Route::middleware(['auth', 'role:employee'])->group(function () {
-//     Route::get('/employees/absensi', [AbsensiController::class, 'index'])
-//         ->name('employees.absensi');
-//     Route::get('/employees/absensi/create', [AbsensiController::class, 'create'])
-//         ->name('employees.absensi_create');
-//     Route::post('/employees/absensi', [AbsensiController::class, 'store'])
-//     ->name('employees.absensi_store');
-
-// });
-
-
-
-
-// Halaman absensi utama
-Route::get('/employees/absensi', [AbsensiController::class, 'index'])->name('employees.absensi');
-
-// Form manual create (opsional, bisa dipakai atau dihapus)
-Route::get('/employees/absensi/create', [AbsensiController::class, 'create'])->name('employees.absensi_create');
-
-// Proses Check-in
-Route::post('/employees/absensi/checkin', [AbsensiController::class, 'checkIn'])->name('employees.checkin');
-
-// Proses Check-out
-Route::post('/employees/absensi/checkout', [AbsensiController::class, 'checkOut'])->name('employees.checkout');
-
-
 Route::get('/users', [UserController::class, 'index'])->name('users.index');
 Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
 Route::post('/users', [UserController::class, 'store'])->name('users.store');
@@ -116,9 +82,6 @@ Route::put('users/{user}', [UserController::class, 'update'])->name('users.updat
 Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
 Route::post('/profile/update-password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
 
-
-
-Route::get('/document', [DocumentController::class, 'index'])->name('document.index');
 
 Route::middleware('auth')->group(function () {
     Route::get('/leave', [LeaveController::class, 'index'])->name('leave.index');
@@ -159,6 +122,23 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::post('/approvals/{id}/update', [ApprovalController::class, 'update'])->name('admin.approvals.update');
     Route::post('/approvals/{id}/approve', [ApprovalController::class, 'approve'])->name('admin.approvals.approve');
     Route::post('/approvals/{id}/reject', [ApprovalController::class, 'reject'])->name('admin.approvals.reject');
+
+    Route::get('/documents', [AdminDocumentController::class, 'index'])->name('admin.documents.index');
+    Route::get('/documents/create', [AdminDocumentController::class, 'create'])->name('admin.documents.create');
+    Route::post('/documents', [AdminDocumentController::class, 'store'])->name('admin.documents.store');
+
+});
+
+// Halaman absensi utama
+Route::middleware(['auth', 'role:employee'])->prefix('admin')->group(function () {
+    Route::get('/employees/absensi', [AbsensiController::class, 'index'])->name('employees.absensi');
+    // Form manual create (opsional, bisa dipakai atau dihapus)
+    Route::get('/employees/absensi/create', [AbsensiController::class, 'create'])->name('employees.absensi_create');
+    // Proses Check-in
+    Route::post('/employees/absensi/checkin', [AbsensiController::class, 'checkIn'])->name('employees.checkin');
+    // Proses Check-out
+    Route::post('/employees/absensi/checkout', [AbsensiController::class, 'checkOut'])->name('employees.checkout');
+    Route::get('/employees/documents/{id}', [EmployeeController::class, 'show_document'])->name('employees.show_documents');
 });
 
 

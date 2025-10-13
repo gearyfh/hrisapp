@@ -43,4 +43,10 @@ class EmployeeController extends Controller
 
 
     }
+
+    public function show_document($id)
+    {
+        $employee = Employee::with('documents')->findOrFail($id);
+        return view('employees.show_documents', compact('employee'));
+    }
 }

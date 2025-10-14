@@ -3,7 +3,7 @@
 @section('content')
 <div class="max-w-2xl mx-auto bg-white shadow-lg rounded-xl p-6 border border-gray-100">
     <div class="flex justify-between items-center mb-5">
-        <h1 class="text-2xl font-semibold text-gray-800">Detail Pengajuan Izin / Sakit</h1>
+        <h1 class="text-2xl font-semibold text-gray-800">Detail Pengajuan Cuti</h1>
         <a href="{{ route('admin.approvals.cuti') }}" 
            class="text-gray-500 hover:text-gray-700 text-sm flex items-center gap-1">
             ← Kembali

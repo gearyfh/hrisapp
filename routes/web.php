@@ -141,6 +141,24 @@ Route::middleware(['auth', 'role:employee'])->prefix('admin')->group(function ()
     Route::get('/employees/documents/{id}', [EmployeeController::class, 'show_document'])->name('employees.show_documents');
 });
 
+// --- Employee ---
+Route::middleware(['auth', 'role:employee'])->prefix('employee')->group(function () {
+    Route::get('/corrections', [AttendanceCorrectionController::class, 'myCorrections'])->name('employees.corrections.index');
+    Route::get('/corrections/select', [AttendanceCorrectionController::class, 'selectAttendance'])->name('employees.corrections.select');
+    Route::get('/corrections/create/{attendance_id}', [AttendanceCorrectionController::class, 'create'])->name('employees.corrections.create');
+    Route::post('/corrections', [AttendanceCorrectionController::class, 'store'])->name('employees.corrections.store');
+    Route::get('/corrections/{id}', [AttendanceCorrectionController::class, 'show'])->name('employees.corrections.show');
+
+});
+
+// --- Admin ---
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
+    Route::get('/corrections', [ApprovalController::class, 'correctionIndex'])->name('admin.corrections.index');
+    Route::get('/corrections/{id}', [ApprovalController::class, 'correctionShow'])->name('admin.corrections.show');
+    Route::post('/corrections/{id}/update', [ApprovalController::class, 'correctionUpdate'])->name('admin.corrections.update');
+});
+
+
 
 
 

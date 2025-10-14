@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AttendanceCorrection;
 use App\Models\LeaveRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -32,7 +33,7 @@ class ApprovalController extends Controller
             ->latest()
             ->get();
 
-        return view('admin.approvals.cutiindex', compact('requests'));
+        return view('admin.approvals.cuti.index', compact('requests'));
     }
 
     /** 
@@ -46,7 +47,7 @@ class ApprovalController extends Controller
             ->latest()
             ->get();
 
-        return view('admin.approvals.izinindex', compact('requests'));
+        return view('admin.approvals.izin.index', compact('requests'));
     }
 
     /** 
@@ -56,7 +57,7 @@ class ApprovalController extends Controller
     {
         $leave = LeaveRequest::with(['employee', 'leaveType'])->findOrFail($id);
 
-        return view('admin.approvals.cutishow', compact('leave'));
+        return view('admin.approvals.cuti.show', compact('leave'));
     }
 
     /** 
@@ -66,7 +67,7 @@ class ApprovalController extends Controller
     {
         $leave = LeaveRequest::with(['employee', 'leaveType'])->findOrFail($id);
 
-        return view('admin.approvals.izinshow', compact('leave'));
+        return view('admin.approvals.izin.show', compact('leave'));
     }
 
     /** 
@@ -133,4 +134,46 @@ class ApprovalController extends Controller
 
         return back()->with('error', '❌ Pengajuan telah ditolak.');
     }
+
+    public function correctionIndex()
+    {
+        $corrections = AttendanceCorrection::with('employee')
+            ->orderByRaw("FIELD(status, 'pending', 'approved', 'rejected')")
+            ->latest()
+            ->get();
+
+        return view('admin.approvals.corrections.index', compact('corrections'));
+    }
+
+    /** 
+     * Detail pengajuan koreksi absensi
+     */
+    public function correctionShow($id)
+    {
+        $correction = AttendanceCorrection::with('employee')->findOrFail($id);
+        return view('admin.approvals.corrections.show', compact('correction'));
+    }
+
+    /** 
+     * Update status koreksi absensi (approve/reject)
+     */
+    public function correctionUpdate(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:approved,rejected',
+            'comment' => 'nullable|string|max:500',
+        ]);
+
+        $correction = AttendanceCorrection::findOrFail($id);
+        $correction->update([
+            'status' => $request->status,
+            'comment' => $request->comment,
+            'approved_by' => Auth::id(),
+            'approved_at' => now(),
+        ]);
+
+        return redirect()->route('admin.corrections.index')
+            ->with('success', '✅ Status koreksi absensi berhasil diperbarui.');
+    }
+
 }

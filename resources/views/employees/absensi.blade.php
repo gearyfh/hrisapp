@@ -102,7 +102,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="px-4 py-3 text-center text-gray-500">
+                            <td colspan="6" class="px-4 py-3 text-center text-gray-500">
                                 Belum ada data absensi
                             </td>
                         </tr>

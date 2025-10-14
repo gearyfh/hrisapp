@@ -112,4 +112,17 @@ class LeaveController extends Controller
         return redirect()->route('leave.index')->with('success', 'Pengajuan berhasil dikirim.');
     }
 }
+
+    public function detail($id)
+{
+    $leave = LeaveRequest::with(['leaveType', 'employee'])->findOrFail($id);
+
+    // Pastikan hanya employee yang punya hak bisa lihat datanya
+    if ($leave->employee_id !== Auth::id()) {
+        abort(403, 'Unauthorized access.');
+    }
+
+    return view('leave.detail', compact('leave'));
+}
+
 }

@@ -88,6 +88,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/leave/cuti/create', [LeaveController::class, 'createCuti'])->name('leave.cuti.create');
     // Route::get('/leave/izin-sakit/create', [LeaveController::class, 'createIzinSakit'])->name('leave.izin_sakit.create');
     Route::post('/leave', [LeaveController::class, 'store'])->name('leave.store');
+    Route::get('/leave/detail/{id}', [LeaveController::class, 'detail'])->name('leave.detail');
 });
 
 Route::middleware('auth')->group(function () {

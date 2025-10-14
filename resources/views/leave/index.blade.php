@@ -58,7 +58,7 @@
                             @endif
                         </td>
                         <td class="p-3">
-                            <a href="#" class="text-blue-600 hover:underline">Detail</a>
+                            <a href="{{ route('leave.detail', $leave->id) }}" class="text-blue-600 hover:underline">Detail</a>
                         </td>
                     </tr>
                 @empty

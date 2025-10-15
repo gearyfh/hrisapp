@@ -11,6 +11,7 @@ use App\Http\Controllers\OvertimeRequestController;
 use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminDocumentController;
+use App\Http\Controllers\NotificationController;
 
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -95,6 +96,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/sick', [LeaveController::class, 'indexSick'])->name('sick.index');
     Route::get('/sick/izin-sakit/create', [LeaveController::class, 'createIzinSakit'])->name('sick.createsick');
     Route::post('/sick', [LeaveController::class, 'store'])->name('sick.store');
+    Route::get('/sick/detail/{id}', [LeaveController::class, 'detailSick'])->name('sick.detail');
+
 });
 
 
@@ -167,6 +170,10 @@ Route::middleware(['auth', 'role:employee'])->prefix('employee')->group(function
     Route::post('/overtimes', [OvertimeRequestController::class, 'store'])->name('employees.overtime.store');
 });
 
+Route::middleware(['auth', 'role:employee'])->prefix('employee')->group(function () {
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+});
 
 Route::prefix('admin')->middleware(['auth'])->group(function () {
     Route::get('/approvals/overtimes', [ApprovalController::class, 'overtimeIndex'])->name('admin.overtime.index');

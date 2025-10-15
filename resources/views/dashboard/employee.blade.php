@@ -48,13 +48,33 @@
         </div>
 
         <!-- Info / Notifikasi -->
-        <div class="bg-white shadow-md rounded-lg p-6">
-            <h2 class="text-lg font-semibold mb-2">Info Terbaru</h2>
-            <ul class="list-disc list-inside text-gray-600 space-y-2">
-                <li>Slip gaji bulan September sudah tersedia</li>
-                <li>Pengajuan cuti Anda sedang diproses</li>
-            </ul>
+        <div class="bg-white shadow-md rounded-lg p-6 flex justify-between items-center">
+            <h2 class="text-lg font-semibold text-gray-800">Notifikasi</h2>
+
+            <a href="{{ route('notifications.index') }}" 
+            class="relative inline-block text-gray-700 hover:text-blue-600 transition">
+                <!-- Icon Lonceng -->
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke-width="1.5" 
+                    stroke="currentColor" 
+                    class="w-7 h-7">
+                    <path stroke-linecap="round" 
+                        stroke-linejoin="round" 
+                        d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75V8.25A6.75 6.75 0 005.25 8.25v1.5a8.967 8.967 0 01-2.311 6.022c1.75.66 3.554 1.105 5.454 1.31m6.464 0a24.255 24.255 0 01-6.464 0m6.464 0a3 3 0 11-6.464 0" />
+                </svg>
+
+                <!-- Badge jumlah notifikasi -->
+                @if($unreadCount ?? 0)
+                    <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5">
+                        {{ $unreadCount }}
+                    </span>
+                @endif
+            </a>
         </div>
+
+
     </div>
 
     <!-- History Absensi -->

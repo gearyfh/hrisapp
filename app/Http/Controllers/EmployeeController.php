@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Attendance;
 use App\Models\Employee;
+use App\Models\Notification;
 use App\Models\LeaveRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -39,7 +40,11 @@ class EmployeeController extends Controller
             ->take(10)
             ->get();
 
-        return view('dashboard.employee', compact('attendance', 'attendances', 'leaves'));
+            $unreadCount = Notification::where('employee_id', $employeeId)
+            ->where('is_read', false)
+            ->count();
+
+        return view('dashboard.employee', compact('attendance', 'attendances', 'leaves','unreadCount'));
 
 
     }

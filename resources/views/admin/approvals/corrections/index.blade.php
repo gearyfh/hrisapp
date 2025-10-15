@@ -15,7 +15,7 @@
                     <tr>
                         <th class="px-4 py-2 border">#</th>
                         <th class="px-4 py-2 border">Pegawai</th>
-                        <th class="px-4 py-2 border">Tanggal</th>
+                        <th class="px-4 py-2 border">Tanggal Masuk  </th>
                         <th class="px-4 py-2 border">Masuk Lama</th>
                         <th class="px-4 py-2 border">Masuk Baru</th>
                         <th class="px-4 py-2 border">Pulang Lama</th>
@@ -29,7 +29,7 @@
                         <tr class="hover:bg-gray-50">
                             <td class="px-4 py-2 border">{{ $loop->iteration }}</td>
                             <td class="px-4 py-2 border">{{ $correction->employee->name ?? '-' }}</td>
-                            <td class="px-4 py-2 border">{{ $correction->date }}</td>
+                            <td class="px-4 py-2 border">{{ $correction->tanggal_masuk }}</td>
                             <td class="px-4 py-2 border">{{ $correction->old_clock_in ?? '-' }}</td>
                             <td class="px-4 py-2 border">{{ $correction->new_clock_in ?? '-' }}</td>
                             <td class="px-4 py-2 border">{{ $correction->old_clock_out ?? '-' }}</td>

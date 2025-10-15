@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\OvertimeRequest;
 use App\Models\AttendanceCorrection;
 use App\Models\LeaveRequest;
 use Illuminate\Http\Request;
@@ -157,23 +158,76 @@ class ApprovalController extends Controller
     /** 
      * Update status koreksi absensi (approve/reject)
      */
-    public function correctionUpdate(Request $request, $id)
-    {
-        $request->validate([
-            'status' => 'required|in:approved,rejected',
-            'comment' => 'nullable|string|max:500',
-        ]);
+   public function correctionUpdate(Request $request, $id)
+{
+    $request->validate([
+        'status' => 'required|in:approved,rejected',
+        'comment' => 'nullable|string|max:500',
+    ]);
 
-        $correction = AttendanceCorrection::findOrFail($id);
-        $correction->update([
-            'status' => $request->status,
-            'comment' => $request->comment,
-            'approved_by' => Auth::id(),
-            'approved_at' => now(),
-        ]);
+    $correction = AttendanceCorrection::with('attendance')->findOrFail($id);
 
-        return redirect()->route('admin.corrections.index')
-            ->with('success', '✅ Status koreksi absensi berhasil diperbarui.');
+    $correction->update([
+        'status' => $request->status,
+        'comment' => $request->comment,
+        'approved_by' => Auth::id(),
+        'approved_at' => now(),
+    ]);
+
+    /** 
+     * Jika koreksi disetujui, update tabel attendance
+     */
+    if ($request->status === 'approved' && $correction->attendance) {
+        $attendance = $correction->attendance;
+
+        $attendance->update([
+            'tanggal_masuk' => $correction->new_date_in ?? $attendance->tanggal_masuk,
+            'tanggal_keluar' => $correction->new_date_out ?? $attendance->tanggal_keluar,
+            'jam_masuk' => $correction->new_clock_in ?? $attendance->jam_masuk,
+            'jam_keluar' => $correction->new_clock_out ?? $attendance->jam_keluar,
+            'is_corrected' => true, // Kolom tambahan di tabel attendances
+        ]);
     }
+
+    return redirect()->route('admin.corrections.index')
+        ->with('success', '✅ Status koreksi absensi berhasil diperbarui.');
+}
+
+public function overtimeIndex()
+{
+    $overtimes = OvertimeRequest::with('employee')
+        ->orderByRaw("FIELD(status, 'pending', 'approved', 'rejected')")
+        ->latest()
+        ->get();
+
+    return view('admin.approvals.overtimes.index', compact('overtimes'));
+}
+
+public function overtimeShow($id)
+{
+    $overtime = OvertimeRequest::with('employee')->findOrFail($id);
+    return view('admin.approvals.overtimes.show', compact('overtime'));
+}
+
+public function overtimeUpdate(Request $request, $id)
+{
+    $request->validate([
+        'status' => 'required|in:approved,rejected',
+        'comment' => 'nullable|string|max:255',
+    ]);
+
+    $overtime = OvertimeRequest::findOrFail($id);
+
+    $overtime->update([
+        'status' => $request->status,
+        'comment' => $request->comment,
+        'approved_by' => Auth::id(),
+        'approved_at' => now(),
+    ]);
+
+    return redirect()->route('admin.overtimes.index')
+        ->with('success', '✅ Status pengajuan lembur berhasil diperbarui.');
+}
+
 
 }

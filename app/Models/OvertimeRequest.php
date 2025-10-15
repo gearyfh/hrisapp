@@ -2,19 +2,59 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\RequestApproval;
 
 class OvertimeRequest extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
-        'employee_id', 'date', 'start_time', 'end_time', 'total_hours', 'reason', 'status'
+        'employee_id',
+        'attendance_id',
+        'date',
+        'start_time',
+        'end_time',
+        'duration',
+        'reason',
+        'status',
+        'comment',
+        'approved_by',
+        'approved_at',
     ];
 
-    public function employee() { return $this->belongsTo(Employee::class); }
+    /**
+     * Hitung durasi lembur otomatis sebelum disimpan
+     */
+    protected static function booted()
+    {
+        static::saving(function ($overtime) {
+            if ($overtime->start_time && $overtime->end_time) {
+                $start = strtotime($overtime->start_time);
+                $end = strtotime($overtime->end_time);
 
-    public function approvals() {
-        return $this->morphMany(RequestApproval::class, 'module', 'module_type', 'module_id');
+                // hitung jam lembur dalam jam desimal
+                $hours = round(($end - $start) / 3600, 2);
+                $overtime->duration = max($hours, 0);
+            }
+        });
+    }
+
+    /** 🔗 Relasi ke employee */
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class);
+    }
+
+    /** 🔗 Relasi ke attendance (absensi harian) */
+    public function attendance()
+    {
+        return $this->belongsTo(Attendance::class);
+    }
+
+    /** 🔗 Relasi ke user yang menyetujui (admin/hrd) */
+    public function approver()
+    {
+        return $this->belongsTo(User::class, 'approved_by');
     }
 }
-

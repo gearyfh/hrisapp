@@ -54,6 +54,7 @@
                 <a href="{{ route('sick.index') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Izin/Sakit</a>
                 <a href="{{ route('leave.index') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Cuti</a>
                 <a href="{{ route('employees.corrections.index') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Koreksi Absensi</a>
+                <a href="{{ route('employees.overtime.index') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Pengajuan Lembur</a>
             @endif
         </aside>
 

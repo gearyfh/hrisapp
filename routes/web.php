@@ -7,7 +7,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\AttendanceCorrectionController;
-use App\Http\Controllers\OvertimeController;
+use App\Http\Controllers\OvertimeRequestController;
 use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminDocumentController;
@@ -158,6 +158,22 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/corrections/{id}', [ApprovalController::class, 'correctionShow'])->name('admin.corrections.show');
     Route::post('/corrections/{id}/update', [ApprovalController::class, 'correctionUpdate'])->name('admin.corrections.update');
 });
+
+
+Route::middleware(['auth', 'role:employee'])->prefix('employee')->group(function () {
+    Route::get('/overtimes', [OvertimeRequestController::class, 'index'])->name('employees.overtime.index');
+    Route::get('/overtimes/select', [OvertimeRequestController::class, 'selectAttendance'])->name('employees.overtime.select');
+    Route::get('/overtimes/create/{attendance_id}', [OvertimeRequestController::class, 'create'])->name('employees.overtime.create');
+    Route::post('/overtimes', [OvertimeRequestController::class, 'store'])->name('employees.overtime.store');
+});
+
+
+Route::prefix('admin')->middleware(['auth'])->group(function () {
+    Route::get('/approvals/overtimes', [ApprovalController::class, 'overtimeIndex'])->name('admin.overtime.index');
+    Route::get('/approvals/overtimes/{id}', [ApprovalController::class, 'overtimeShow'])->name('admin.overtime.show');
+    Route::post('/approvals/overtimes/{id}', [ApprovalController::class, 'overtimeUpdate'])->name('admin.overtimes.update');
+});
+
 
 
 

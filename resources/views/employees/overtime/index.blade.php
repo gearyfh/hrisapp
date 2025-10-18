@@ -5,7 +5,7 @@
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-semibold text-gray-800">Daftar Pengajuan Lembur</h1>
         <a href="{{ route('employees.overtime.select') }}" 
-           class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm">
+           class="bg-white hover:bg-blue-700 hover:text-white hover:border-none border border-gray-400 text-black px-4 py-2 rounded-full">
             + Ajukan Lembur
         </a>
     </div>

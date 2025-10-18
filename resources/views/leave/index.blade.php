@@ -7,7 +7,7 @@
 
         <div class="space-x-2">
             <a href="{{ route('leave.cuti.create') }}"
-               class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-md transition">
+               class="bg-white hover:bg-blue-700 hover:text-white border hover:border-none border-gray-400 text-black px-4 py-2 rounded-full transition">
                 + Ajukan Cuti
             </a>
 
@@ -26,7 +26,7 @@
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr class="bg-gray-100 border-b">
-                    <th class="p-3 text-gray-700 font-semibold">#</th>
+                    <th class="p-3 text-gray-700 font-semibold">No</th>
                     <th class="p-3 text-gray-700 font-semibold">Jenis</th>
                     <th class="p-3 text-gray-700 font-semibold">Tanggal</th>
                     <th class="p-3 text-gray-700 font-semibold">Total Hari</th>

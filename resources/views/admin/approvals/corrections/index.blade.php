@@ -13,7 +13,7 @@
             <table class="w-full text-sm text-left border border-gray-200">
                 <thead class="bg-gray-100 text-gray-700">
                     <tr>
-                        <th class="px-4 py-2 border">#</th>
+                        <th class="px-4 py-2 border">No</th>
                         <th class="px-4 py-2 border">Pegawai</th>
                         <th class="px-4 py-2 border">Tanggal Masuk  </th>
                         <th class="px-4 py-2 border">Masuk Lama</th>

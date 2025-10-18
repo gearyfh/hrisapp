@@ -6,7 +6,7 @@
         <h1 class="text-2xl font-bold text-gray-800">Daftar Pengajuan Koreksi Absensi</h1>
 
         <a href="{{ route('employees.corrections.select') }}"
-           class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow-md transition">
+           class="bg-white hover:bg-green-700 hover:text-white hover:border-none border border-gray-400 text-black px-4 py-2 rounded-full transition">
             + Ajukan Koreksi
         </a>
     </div>

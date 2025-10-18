@@ -16,7 +16,7 @@
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr class="bg-gray-100 border-b">
-                    <th class="p-3 text-gray-700 font-semibold">#</th>
+                    <th class="p-3 text-gray-700 font-semibold">No</th>
                     <th class="p-3 text-gray-700 font-semibold">Jenis</th>
                     <th class="p-3 text-gray-700 font-semibold">Tanggal</th>
                     <th class="p-3 text-gray-700 font-semibold">Total Hari</th>

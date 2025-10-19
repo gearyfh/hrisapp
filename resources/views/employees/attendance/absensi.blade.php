@@ -24,7 +24,7 @@
                     </p>
 
                     @if(!$attendance)
-                        <form action="{{ route('employees.absensi_create') }}" method="GET">
+                        <form action="{{ route('employees.attendance.absensi_create') }}" method="GET">
                             @csrf
                             <button type="submit"
                                 class="border border-gray-400 text-black px-6 py-2 rounded-full hover:bg-green-600 hover:text-white hover:border-none transition">

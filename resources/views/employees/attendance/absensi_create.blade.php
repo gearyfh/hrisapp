@@ -1,28 +1,32 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="flex items-center justify-center mt-[10%]">
-    <div class="w-full max-w-md bg-gray-100 p-8 rounded-lg shadow-lg">
-        <h1 class="text-2xl font-bold mb-6 text-center">Form Absensi</h1>
+<div class="max-w-xl mx-auto bg-white shadow-lg rounded-2xl p-8 mt-8">
+    <div class="mb-6 border-b border-gray-100 pb-3">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">🕓 Form Absensi</h1>
 
+        {{-- Pesan Error --}}
         @if ($errors->any())
-            <div class="bg-red-100 text-red-700 p-3 rounded mb-4">
-                <ul>
+            <div class="bg-red-50 border border-red-300 text-red-700 p-3 rounded-lg mb-5">
+                <ul class="list-disc list-inside text-sm">
                     @foreach ($errors->all() as $error)
-                        <li>- {{ $error }}</li>
+                        <li>⚠️ {{ $error }}</li>
                     @endforeach
                 </ul>
             </div>
         @endif
 
-        <form action="{{ route('employees.checkin') }}" method="POST" class="space-y-4">
+        {{-- Form Absensi --}}
+        <form action="{{ route('employees.checkin') }}" method="POST" class="space-y-5">
             @csrf
 
             {{-- Jenis Absensi --}}
             <div>
-                <label class="block font-medium mb-1">Jenis Absensi</label>
-                <select name="jenis" class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-400" required>
-                    <option value="">-- Pilih --</option>
+                <label class="block text-gray-700 font-medium mb-1">📍 Jenis Absensi</label>
+                <select name="jenis"
+                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none transition"
+                    required>
+                    <option value="">-- Pilih Jenis --</option>
                     <option value="WFO">Work From Office (WFO)</option>
                     <option value="WFH">Work From Home (WFH)</option>
                 </select>
@@ -30,32 +34,34 @@
 
             {{-- Tanggal --}}
             <div>
-                <label class="block font-medium mb-1">Tanggal</label>
+                <label class="block text-gray-700 font-medium mb-1">📅 Tanggal</label>
                 <input type="date" name="tanggal_masuk"
                        value="{{ \Carbon\Carbon::now()->toDateString() }}"
-                       class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-400" disabled>
+                       class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                       disabled>
             </div>
 
             {{-- Jam --}}
             <div>
-                <label class="block font-medium mb-1">Jam</label>
+                <label class="block text-gray-700 font-medium mb-1">⏰ Jam</label>
                 <input type="time" name="jam_masuk"
                        value="{{ \Carbon\Carbon::now()->format('H:i') }}"
-                       class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-400" disabled>
+                       class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                       disabled>
             </div>
 
             {{-- Lokasi --}}
             <div>
-                <label class="block font-medium mb-1">Lokasi</label>
+                <label class="block text-gray-700 font-medium mb-1">📌 Lokasi</label>
                 <div class="flex items-center gap-2">
-                    <input type="text" name="lokasi" id="lokasi" placeholder="Deteksi lokasi anda"
+                    <input type="text" name="lokasi" id="lokasi" placeholder="Deteksi lokasi Anda"
                         value="{{ old('lokasi') }}"
-                        class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-400" readonly>
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none bg-gray-50"
+                        readonly>
 
                     <button type="button" id="btnDetectLocation"
-                        class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow-md transition"
+                        class="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-md transition transform hover:scale-105 active:scale-95"
                         title="Deteksi Lokasi">
-                        <!-- Heroicon: Map Pin -->
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                             stroke-width="2" stroke="currentColor" class="w-5 h-5">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -65,19 +71,20 @@
                         </svg>
                     </button>
                 </div>
-
-                <p id="location-status" class="text-sm text-gray-500 mt-1">Klik ikon 📍 untuk mendeteksi lokasi Anda</p>
+                <p id="location-status" class="text-sm text-gray-500 mt-2 italic">
+                    Klik ikon 📍 untuk mendeteksi lokasi Anda
+                </p>
             </div>
 
-
-            {{-- Tombol --}}
-            <div class="flex justify-between">
-                <a href="{{ route('employees.absensi') }}"
-                   class="bg-gray-500 text-white px-5 py-2 rounded-full hover:bg-gray-600 transition">
-                    Cancel
+            {{-- Tombol Aksi --}}
+            <div class="flex justify-between items-center pt-2">
+                <a href="{{ route('employees.attendance.absensi') }}"
+                   class="bg-gray-400 hover:bg-gray-500 text-white px-5 py-2 rounded-full font-medium shadow-md transition transform hover:scale-105">
+                    Batal
                 </a>
+
                 <button type="submit"
-                    class="bg-green-600 text-white px-5 py-2 rounded-full hover:bg-green-700 transition">
+                    class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-full font-medium shadow-md transition transform hover:scale-105 active:scale-95">
                     Simpan Absensi
                 </button>
             </div>
@@ -119,5 +126,4 @@ document.getElementById("btnDetectLocation").addEventListener("click", () => {
     }
 });
 </script>
-
 @endsection

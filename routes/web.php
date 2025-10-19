@@ -135,9 +135,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 
 // Halaman absensi utama
 Route::middleware(['auth', 'role:employee'])->prefix('admin')->group(function () {
-    Route::get('/employees/absensi', [AbsensiController::class, 'index'])->name('employees.absensi');
+    Route::get('/employees/absensi', [AbsensiController::class, 'index'])->name('employees.attendance.absensi');
     // Form manual create (opsional, bisa dipakai atau dihapus)
-    Route::get('/employees/absensi/create', [AbsensiController::class, 'create'])->name('employees.absensi_create');
+    Route::get('/employees/absensi/create', [AbsensiController::class, 'create'])->name('employees.attendance.absensi_create');
     // Proses Check-in
     Route::post('/employees/absensi/checkin', [AbsensiController::class, 'checkIn'])->name('employees.checkin');
     // Proses Check-out

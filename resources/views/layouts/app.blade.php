@@ -35,7 +35,7 @@
 
             {{-- Superadmin --}}
             @if(auth()->user()->role === 'superadmin')
-                <a href="{{ route('employees.absensi') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Absensi</a>
+                <a href="{{ route('employees.attendance.absensi') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Absensi</a>
                 <a href="/company" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Company</a>
                 <a href="/karyawan" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Karyawan</a>
                 <a href="/dokumen" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Dokumen</a>
@@ -50,7 +50,7 @@
 
             {{-- Employee --}}
             @elseif(auth()->user()->role === 'employee')
-                <a href="{{ route('employees.absensi') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Absensi</a>
+                <a href="{{ route('employees.attendance.absensi') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Absensi</a>
                 <a href="{{ route('employees.show_documents', Auth::user()->id) }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Dokumen</a>
                 <a href="{{ route('sick.index') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Izin/Sakit</a>
                 <a href="{{ route('leave.index') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Cuti</a>

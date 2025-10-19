@@ -15,7 +15,7 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
 
         <!-- Absensi Hari Ini -->
-        <div class="relative bg-gradient-to-r from-orange-400 to-orange-500 text-white rounded-2xl p-6 shadow-lg overflow-hidden">
+        <div class="relative bg-gradient-to-r from-orange-400 to-orange-500 text-white rounded-2xl p-6 shadow-lg overflow-hidden transition-all duration-300 ease-in-out transform hover:-translate-y-1">
             <div class="relative z-10">
                 <h2 class="text-lg font-semibold mb-2">Absensi Hari Ini</h2>
                 
@@ -46,7 +46,7 @@
         </div>
 
         <!-- Sisa Cuti -->
-        <div class="relative bg-gradient-to-r from-indigo-500 to-indigo-600 text-white rounded-2xl p-6 shadow-lg overflow-hidden">
+        <div class="relative bg-gradient-to-r from-indigo-500 to-indigo-600 text-white rounded-2xl p-6 shadow-lg overflow-hidden transition-all duration-300 ease-in-out transform hover:-translate-y-1">
             <div class="relative z-10">
                 <h2 class="text-lg font-semibold mb-2">Sisa Cuti</h2>
                 <p class="text-4xl font-bold">{{ $remainingLeave ?? 12 }}</p>
@@ -60,7 +60,7 @@
         </div>
 
         <!-- Notifikasi -->
-        <div class="relative bg-gradient-to-r from-sky-400 to-sky-500 text-white rounded-2xl p-6 shadow-lg overflow-hidden flex justify-between items-start">
+        <div class="relative bg-gradient-to-r from-sky-400 to-sky-500 text-white rounded-2xl p-6 shadow-lg overflow-hidden flex justify-between items-start transition-all duration-300 ease-in-out transform hover:-translate-y-1">
             <div class="relative z-10">
                 <h2 class="text-lg font-semibold">Notifikasi</h2>
                 <p class="text-sm mt-1">Cek notifikasi terbaru kamu</p>

@@ -49,9 +49,9 @@
                 @if($leave->status == 'pending')
                     <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-medium shadow-sm">⏳ Pending</span>
                 @elseif($leave->status == 'approved')
-                    <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium shadow-sm">✅ Disetujui</span>
+                    <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium shadow-sm">✅ Approved</span>
                 @elseif($leave->status == 'rejected')
-                    <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-medium shadow-sm">❌ Ditolak</span>
+                    <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-medium shadow-sm">❌ Rejected</span>
                 @else
                     <span class="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-xs font-medium shadow-sm">-</span>
                 @endif
@@ -94,7 +94,7 @@
 
     <!-- Footer Info -->
     <div class="mt-8 border-t pt-4 text-right text-sm text-gray-500">
-        <p>Disetujui oleh: <span class="text-gray-700 font-medium">{{ $leave->approved_by ?? '-' }}</span></p>
+        <p>Approved oleh: <span class="text-gray-700 font-medium">{{ $leave->approved_by ?? '-' }}</span></p>
         <p>Pada: <span class="text-gray-700 font-medium">{{ $leave->approved_at ?? '-' }}</span></p>
     </div>
 </div>

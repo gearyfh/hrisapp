@@ -1,18 +1,16 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\AbsensiController;
-use App\Http\Controllers\EmployeeController;
-use App\Http\Controllers\DocumentController;
-use App\Http\Controllers\LeaveController;
-use App\Http\Controllers\AttendanceCorrectionController;
-use App\Http\Controllers\OvertimeRequestController;
-use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminDocumentController;
+use App\Http\Controllers\ApprovalController;
+use App\Http\Controllers\AttendanceCorrectionController;
+use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\NotificationController;
-
+use App\Http\Controllers\OvertimeRequestController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,7 +23,7 @@ use Illuminate\Support\Facades\Route;
 | routes are loaded by the RouteServiceProvider and all of them will
 | be assigned to the "web" middleware group. Make something great!
 |
-*/
+ */
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -79,10 +77,8 @@ Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.
 Route::get('users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
 Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
 
-
 Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
 Route::post('/profile/update-password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
-
 
 Route::middleware('auth')->group(function () {
     Route::get('/leave', [LeaveController::class, 'index'])->name('leave.index');
@@ -100,14 +96,12 @@ Route::middleware('auth')->group(function () {
 
 });
 
-
-
 // Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 //     Route::get('/approvals', [ApprovalController::class, 'index'])->name('admin.approvals.index');
 //     Route::post('/approvals/{id}', [ApprovalController::class, 'update'])->name('admin.approvals.update');
-    
+
 //     Route::post('/approvals/{id}/approve', [ApprovalController::class, 'approve'])->name('admin.approvals.approve');
-//     Route::post('/approvals/{id}/reject', [ApprovalController::class, 'reject'])->name('admin.approvals.reject');   
+//     Route::post('/approvals/{id}/reject', [ApprovalController::class, 'reject'])->name('admin.approvals.reject');
 // });
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
@@ -142,7 +136,7 @@ Route::middleware(['auth', 'role:employee'])->prefix('admin')->group(function ()
     Route::post('/employees/absensi/checkin', [AbsensiController::class, 'checkIn'])->name('employees.checkin');
     // Proses Check-out
     Route::post('/employees/absensi/checkout', [AbsensiController::class, 'checkOut'])->name('employees.checkout');
-    Route::get('/employees/documents/{id}', [EmployeeController::class, 'show_document'])->name('employees.show_documents');
+    Route::get('/employees/documents/{id}', [EmployeeController::class, 'show_document'])->name('employees.documents.show_documents');
 });
 
 // --- Employee ---
@@ -162,7 +156,6 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::post('/corrections/{id}/update', [ApprovalController::class, 'correctionUpdate'])->name('admin.corrections.update');
 });
 
-
 Route::middleware(['auth', 'role:employee'])->prefix('employee')->group(function () {
     Route::get('/overtimes', [OvertimeRequestController::class, 'index'])->name('employees.overtime.index');
     Route::get('/overtimes/select', [OvertimeRequestController::class, 'selectAttendance'])->name('employees.overtime.select');
@@ -181,9 +174,4 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
     Route::post('/approvals/overtimes/{id}', [ApprovalController::class, 'overtimeUpdate'])->name('admin.overtimes.update');
 });
 
-
-
-
-
-
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

@@ -4,12 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Attendance;
 use App\Models\Employee;
-use App\Models\Notification;
 use App\Models\LeaveRequest;
-use Illuminate\Http\Request;
+use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
-
 
 class EmployeeController extends Controller
 {
@@ -34,24 +31,23 @@ class EmployeeController extends Controller
             ->orderBy('tanggal_masuk', 'desc')
             ->get();
 
-           $leaves = LeaveRequest::with('leaveType')
+        $leaves = LeaveRequest::with('leaveType')
             ->where('employee_id', $employeeId)
             ->latest()
             ->take(10)
             ->get();
 
-            $unreadCount = Notification::where('employee_id', $employeeId)
+        $unreadCount = Notification::where('employee_id', $employeeId)
             ->where('is_read', false)
             ->count();
 
-        return view('dashboard.employee', compact('attendance', 'attendances', 'leaves','unreadCount'));
-
+        return view('dashboard.employee', compact('attendance', 'attendances', 'leaves', 'unreadCount'));
 
     }
 
     public function show_document($id)
     {
         $employee = Employee::with('documents')->findOrFail($id);
-        return view('employees.show_documents', compact('employee'));
+        return view('employees.documents.show_documents', compact('employee'));
     }
 }

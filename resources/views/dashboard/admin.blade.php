@@ -114,9 +114,9 @@
                                 @if($leave->status === 'pending')
                                     <span class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-xs font-medium">Pending</span>
                                 @elseif($leave->status === 'approved')
-                                    <span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs font-medium">Disetujui</span>
+                                    <span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs font-medium">Approved</span>
                                 @else
-                                    <span class="bg-rose-100 text-rose-700 px-3 py-1 rounded-full text-xs font-medium">Ditolak</span>
+                                    <span class="bg-rose-100 text-rose-700 px-3 py-1 rounded-full text-xs font-medium">Rejected</span>
                                 @endif
                             </td>
                             <td class="px-4 py-3 flex space-x-2">

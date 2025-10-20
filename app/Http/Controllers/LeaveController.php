@@ -125,4 +125,17 @@ class LeaveController extends Controller
     return view('leave.detail', compact('leave'));
 }
 
+public function detailSick($id)
+{
+    $leave = LeaveRequest::with(['leaveType', 'employee'])->findOrFail($id);
+
+    // Validasi agar hanya pemilik data yang bisa lihat
+    if ($leave->employee_id !== Auth::id()) {
+        abort(403, 'Unauthorized access.');
+    }
+
+    return view('sick.detail', compact('leave'));
+}
+
+
 }

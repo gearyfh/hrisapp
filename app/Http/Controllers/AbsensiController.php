@@ -29,7 +29,7 @@ class AbsensiController extends Controller
             ->orderBy('tanggal_masuk', 'desc')
             ->get();
 
-        return view('employees.absensi', compact('attendance', 'attendances'));
+        return view('employees.attendance.absensi', compact('attendance', 'attendances'));
     }
 
     // 🔹 BALIKIN CREATE UNTUK FORM absensi_create.blade.php
@@ -38,7 +38,7 @@ class AbsensiController extends Controller
         $employee = Auth::user()->employee;
 
         if (!$employee) {
-            return redirect()->route('employees.absensi')
+            return redirect()->route('employees.attendance.absensi')
                              ->with('error', 'Anda bukan employee!');
         }
 
@@ -48,11 +48,11 @@ class AbsensiController extends Controller
             ->first();
 
         if ($active) {
-            return redirect()->route('employees.absensi')
+            return redirect()->route('employees.attendance.absensi')
                              ->with('error', 'Anda masih punya absensi aktif, silakan checkout dulu!');
         }
 
-        return view('employees.absensi_create');
+        return view('employees.attendance.absensi_create');
     }
 
     // 🔹 PROSES CHECK-IN
@@ -77,7 +77,7 @@ class AbsensiController extends Controller
             'lokasi'        => $validated['lokasi'],
         ]);
 
-        return redirect()->route('employees.absensi')->with('success', 'Check-in berhasil!');
+        return redirect()->route('employees.attendance.absensi')->with('success', 'Check-in berhasil!');
     }
 
     // 🔹 PROSES CHECK-OUT
@@ -99,6 +99,6 @@ class AbsensiController extends Controller
             'jam_keluar'     => now()->format('H:i:s'),
         ]);
 
-        return redirect()->route('employees.absensi')->with('success', 'Check-out berhasil!');
+        return redirect()->route('employees.attendance.absensi')->with('success', 'Check-out berhasil!');
     }
 }

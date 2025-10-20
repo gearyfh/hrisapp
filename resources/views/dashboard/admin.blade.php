@@ -1,48 +1,74 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto px-4">
-    <h1 class="text-2xl font-bold mb-4">Admin Dashboard</h1>
+<div class="container mx-auto px-6 py-6 space-y-8">
 
-    <p class="text-gray-600 mb-6">
-        Selamat datang, <span class="font-semibold">{{ Auth::user()->name }}</span> 👋  
-        Anda login sebagai <span class="font-semibold text-blue-600">Administrator</span>
-    </p>
+    <!-- Header -->
+    <div class="flex justify-between items-center">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800">Admin Dashboard</h1>
+            <p class="text-gray-500 mt-1">
+                Selamat datang, 
+                <span class="font-semibold text-indigo-600">{{ Auth::user()->name }}</span> 👋  
+                <span class="text-gray-400">Anda login sebagai</span> 
+                <span class="font-semibold text-indigo-600">Administrator</span>
+            </p>
+        </div>
+    </div>
 
-    <!-- Ringkasan Statistik -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div class="bg-white shadow-md rounded-lg p-6">
-            <h2 class="text-lg font-semibold mb-2">Total Pegawai</h2>
-            <p class="text-4xl font-bold text-blue-600">{{ \App\Models\Employee::count() }}</p>
+    <!-- Statistik Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-gradient-to-r from-indigo-500 to-indigo-600 text-white rounded-xl p-5 flex justify-between items-center shadow-md hover:shadow-lg transition-all duration-300 ease-in-out transform hover:-translate-y-1">
+            <div>
+                <h2 class="text-sm opacity-80">Total Pegawai</h2>
+                <p class="text-4xl font-semibold mt-1">{{ \App\Models\Employee::count() }}</p>
+            </div>
+            <div class="bg-white/20 p-3 rounded-full">
+                <i class="fa-solid fa-users text-xl"></i>
+            </div>
         </div>
-        <div class="bg-white shadow-md rounded-lg p-6">
-            <h2 class="text-lg font-semibold mb-2">Total Absensi Hari Ini</h2>
-            <p class="text-4xl font-bold text-green-600">{{ \App\Models\Attendance::whereDate('tanggal_masuk', now())->count() }}</p>
+
+        <div class="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-xl p-5 flex justify-between items-center shadow-md hover:shadow-lg transition-all duration-300 ease-in-out transform hover:-translate-y-1">
+            <div>
+                <h2 class="text-sm opacity-80">Total Absensi Hari Ini</h2>
+                <p class="text-4xl font-semibold mt-1">{{ \App\Models\Attendance::whereDate('tanggal_masuk', now())->count() }}</p>
+            </div>
+            <div class="bg-white/20 p-3 rounded-full">
+                <i class="fa-solid fa-calendar-check text-xl"></i>
+            </div>
         </div>
-        <div class="bg-white shadow-md rounded-lg p-6">
-            <h2 class="text-lg font-semibold mb-2">Pengajuan Pending</h2>
-            <p class="text-4xl font-bold text-yellow-600">{{ \App\Models\LeaveRequest::where('status', 'pending')->count() }}</p>
+
+        <div class="bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-xl p-5 flex justify-between items-center shadow-md hover:shadow-lg transition-all duration-300 ease-in-out transform hover:-translate-y-1">
+            <div>
+                <h2 class="text-sm opacity-80">Pengajuan Pending</h2>
+                <p class="text-4xl font-semibold mt-1">{{ \App\Models\LeaveRequest::where('status', 'pending')->count() }}</p>
+            </div>
+            <div class="bg-white/20 p-3 rounded-full">
+                <i class="fa-solid fa-hourglass-half text-xl"></i>
+            </div>
         </div>
     </div>
 
     <!-- Data Absensi -->
-    <div class="bg-white shadow-md rounded-lg p-6 mb-8">
-        <h2 class="text-lg font-semibold mb-4">Data Absensi Pegawai</h2>
+    <div class="bg-white rounded-xl shadow-sm p-6 transition hover:shadow-md">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-clock text-indigo-600"></i> Data Absensi Pegawai
+        </h2>
 
         <div class="overflow-x-auto">
-            <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden">
-                <thead class="bg-gray-50 text-gray-700 uppercase text-sm">
+            <table class="min-w-full text-sm border border-gray-200 rounded-lg overflow-hidden">
+                <thead class="bg-gray-100 text-gray-700 text-xs uppercase">
                     <tr>
-                        <th class="px-4 py-3 border-b text-left font-semibold">Pegawai</th>
-                        <th class="px-4 py-3 border-b text-left font-semibold">Tanggal</th>
-                        <th class="px-4 py-3 border-b text-left font-semibold">Check In</th>
-                        <th class="px-4 py-3 border-b text-left font-semibold">Check Out</th>
-                        <th class="px-4 py-3 border-b text-left font-semibold">Jenis</th>
+                        <th class="px-4 py-3 text-left font-semibold">Pegawai</th>
+                        <th class="px-4 py-3 text-left font-semibold">Tanggal</th>
+                        <th class="px-4 py-3 text-left font-semibold">Check In</th>
+                        <th class="px-4 py-3 text-left font-semibold">Check Out</th>
+                        <th class="px-4 py-3 text-left font-semibold">Jenis</th>
                     </tr>
                 </thead>
-                <tbody class="text-gray-700 text-sm divide-y divide-gray-100">
+                <tbody class="divide-y divide-gray-100 text-gray-700">
                     @forelse ($attendances as $absen)
-                        <tr class="hover:bg-blue-50 transition">
+                        <tr class="hover:bg-indigo-50 transition-colors duration-200">
                             <td class="px-4 py-3 font-medium">{{ $absen->employee->name ?? '-' }}</td>
                             <td class="px-4 py-3">{{ $absen->tanggal_masuk }}</td>
                             <td class="px-4 py-3">{{ $absen->jam_masuk ?? '-' }}</td>
@@ -51,9 +77,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="text-center px-4 py-3 text-gray-500">
-                                Belum ada data absensi
-                            </td>
+                            <td colspan="5" class="text-center py-4 text-gray-500 italic">Belum ada data absensi</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -62,57 +86,57 @@
     </div>
 
     <!-- Data Pengajuan -->
-    <div class="bg-white shadow-md rounded-lg p-6 mb-8">
-        <h2 class="text-lg font-semibold mb-4">Pengajuan Cuti / Izin / Sakit</h2>
+    <div class="bg-white rounded-xl shadow-sm p-6 transition hover:shadow-md">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-envelope-open-text text-indigo-600"></i> Pengajuan Cuti / Izin / Sakit
+        </h2>
 
         <div class="overflow-x-auto">
-            <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden">
-                <thead class="bg-gray-50 text-gray-700 uppercase text-sm">
+            <table class="min-w-full text-sm border border-gray-200 rounded-lg overflow-hidden">
+                <thead class="bg-gray-100 text-gray-700 text-xs uppercase">
                     <tr>
-                        <th class="px-4 py-3 border-b text-left font-semibold">Pegawai</th>
-                        <th class="px-4 py-3 border-b text-left font-semibold">Jenis</th>
-                        <th class="px-4 py-3 border-b text-left font-semibold">Tanggal</th>
-                        <th class="px-4 py-3 border-b text-left font-semibold">Durasi</th>
-                        <th class="px-4 py-3 border-b text-left font-semibold">Status</th>
-                        <th class="px-4 py-3 border-b text-left font-semibold">Aksi</th>
+                        <th class="px-4 py-3 text-left font-semibold">Pegawai</th>
+                        <th class="px-4 py-3 text-left font-semibold">Jenis</th>
+                        <th class="px-4 py-3 text-left font-semibold">Tanggal</th>
+                        <th class="px-4 py-3 text-left font-semibold">Durasi</th>
+                        <th class="px-4 py-3 text-left font-semibold">Status</th>
+                        <th class="px-4 py-3 text-left font-semibold">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="text-gray-700 text-sm divide-y divide-gray-100">
+                <tbody class="divide-y divide-gray-100 text-gray-700">
                     @forelse ($leaves as $leave)
-                        <tr class="hover:bg-blue-50 transition">
+                        <tr class="hover:bg-indigo-50 transition-colors duration-200">
                             <td class="px-4 py-3 font-medium">{{ $leave->employee->name ?? '-' }}</td>
                             <td class="px-4 py-3">{{ $leave->leaveType->name ?? '-' }}</td>
                             <td class="px-4 py-3">{{ $leave->start_date }} - {{ $leave->end_date }}</td>
                             <td class="px-4 py-3">{{ $leave->total_days }} hari</td>
                             <td class="px-4 py-3">
                                 @if($leave->status === 'pending')
-                                    <span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-sm">Pending</span>
+                                    <span class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-xs font-medium">Pending</span>
                                 @elseif($leave->status === 'approved')
-                                    <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-sm">Disetujui</span>
+                                    <span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs font-medium">Approved</span>
                                 @else
-                                    <span class="bg-red-100 text-red-700 px-2 py-1 rounded text-sm">Ditolak</span>
+                                    <span class="bg-rose-100 text-rose-700 px-3 py-1 rounded-full text-xs font-medium">Rejected</span>
                                 @endif
                             </td>
                             <td class="px-4 py-3 flex space-x-2">
                                 @if($leave->status === 'pending')
                                     <form action="{{ route('admin.approvals.approve', $leave->id) }}" method="POST">
                                         @csrf
-                                        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm">Setujui</button>
+                                        <button type="submit" class="bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1 rounded-full text-xs font-medium transition">Setujui</button>
                                     </form>
                                     <form action="{{ route('admin.approvals.reject', $leave->id) }}" method="POST">
                                         @csrf
-                                        <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm">Tolak</button>
+                                        <button type="submit" class="bg-rose-500 hover:bg-rose-600 text-white px-3 py-1 rounded-full text-xs font-medium transition">Tolak</button>
                                     </form>
                                 @else
-                                    <span class="text-gray-500 text-sm italic">Selesai</span>
+                                    <span class="text-gray-400 text-xs italic">Selesai</span>
                                 @endif
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center px-4 py-3 text-gray-500">
-                                Belum ada pengajuan cuti atau izin
-                            </td>
+                            <td colspan="6" class="text-center py-4 text-gray-500 italic">Belum ada pengajuan cuti atau izin</td>
                         </tr>
                     @endforelse
                 </tbody>

@@ -4,55 +4,66 @@
 <div class="max-w-3xl mx-auto bg-white shadow-md rounded-xl p-6">
     <div class="flex justify-between items-center mb-5">
         <h1 class="text-2xl font-semibold text-gray-800">Detail Pengajuan Koreksi Absensi</h1>
-        <a href="{{ route('admin.corrections.index') }}" class="text-gray-500 hover:text-gray-700 text-sm flex items-center gap-1">
-            ← Kembali
-        </a>
     </div>
 
-    <div class="space-y-2 text-sm text-gray-700">
-        <div class="grid grid-cols-2">
-            <span class="font-semibold">Pegawai</span>
-            <span>{{ $correction->employee->name ?? '-' }}</span>
+    <!-- Grid Detail -->
+    <div class="grid grid-cols-2 gap-6 text-sm">
+        <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+            <p class="text-gray-500">Nama Karyawan</p>
+            <p class="font-semibold text-gray-800 mt-1">{{ $correction->employee->name ?? '-' }}</p>
         </div>
-        <div class="grid grid-cols-2">
-            <span class="font-semibold">Tanggal</span>
-            <span>{{ $correction->date }}</span>
+
+        <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+            <p class="text-gray-500">Tanggal</p>
+            <p class="font-semibold text-gray-800 mt-1">{{ $correction->date }}</p>
         </div>
-        <div class="grid grid-cols-2">
-            <span class="font-semibold">Masuk Lama</span>
-            <span>{{ $correction->old_clock_in ?? '-' }}</span>
+
+        <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+            <p class="text-gray-500">Masuk Lama</p>
+            <p class="font-semibold text-gray-800 mt-1">{{ $correction->old_clock_in ?? '-' }}</p>
         </div>
-        <div class="grid grid-cols-2">
-            <span class="font-semibold">Masuk Baru</span>
-            <span>{{ $correction->new_clock_in ?? '-' }}</span>
+
+        <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+            <p class="text-gray-500">Masuk Baru</p>
+            <p class="font-semibold text-gray-800 mt-1">{{ $correction->new_clock_in ?? '-' }}</p>
         </div>
-        <div class="grid grid-cols-2">
-            <span class="font-semibold">Pulang Lama</span>
-            <span>{{ $correction->old_clock_out ?? '-' }}</span>
+
+        <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+            <p class="text-gray-500">Pulang Lama</p>
+            <p class="font-semibold text-gray-800 mt-1">{{ $correction->old_clock_out ?? '-' }}</p>
         </div>
-        <div class="grid grid-cols-2">
-            <span class="font-semibold">Pulang Baru</span>
-            <span>{{ $correction->new_clock_out ?? '-' }}</span>
+
+        <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+            <p class="text-gray-500">Pulang Baru</p>
+            <p class="font-semibold text-gray-800 mt-1">{{ $correction->new_clock_out ?? '-' }}</p>
         </div>
-        <div class="grid grid-cols-2">
-            <span class="font-semibold">Alasan</span>
-            <span>{{ $correction->reason ?? '-' }}</span>
+
+        <div class="md:col-span-2">
+            <div class="bg-gray-50 p-5 rounded-lg border border-gray-100">
+                <p class="text-gray-500 mb-1">📝 Alasan Koreksi</p>
+                <p class="font-semibold text-gray-800 leading-relaxed">{{ $correction->reason ?? '-' }}</p>
+            </div>
         </div>
-        <div class="grid grid-cols-2">
-            <span class="font-semibold">Status</span>
-            <span>
-                @if($correction->status == 'pending')
-                    <span class="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded text-xs font-medium">Pending</span>
-                @elseif($correction->status == 'approved')
-                    <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-xs font-medium">Approved</span>
-                @else
-                    <span class="bg-red-100 text-red-700 px-2 py-0.5 rounded text-xs font-medium">Rejected</span>
-                @endif
-            </span>
+
+        <div class="md:col-span-2">
+            <div class="bg-gray-50 p-5 rounded-lg border border-gray-100">
+                <p class="text-gray-500 mb-1">Status</p>
+                <p class="font-semibold mt-2">
+                    @if($correction->status == 'pending')
+                        <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-medium shadow-sm">⏳ Pending</span>
+                    @elseif($correction->status == 'approved')
+                        <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium shadow-sm">✅ Approved</span>
+                    @elseif($correction->status == 'rejected')
+                        <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-medium shadow-sm">❌ Rejected</span>
+                    @else
+                        <span class="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-xs font-medium shadow-sm">-</span>
+                    @endif
+                </p>
+            </div>
         </div>
     </div>
 
-    {{-- Hanya tampil jika masih pending --}}
+    {{-- Jika status masih pending --}}
     @if($correction->status === 'pending')
         <hr class="my-6">
 
@@ -61,7 +72,9 @@
             <input type="hidden" name="status" id="statusInput" value="">
 
             <div>
-                <label for="comment" class="block text-sm font-medium text-gray-700 mb-1">Komentar (opsional)</label>
+                <label for="comment" class="block text-sm font-medium text-gray-700 mb-1">
+                    Komentar (opsional)
+                </label>
                 <textarea name="comment" id="comment" rows="3"
                     placeholder="Tuliskan komentar atau alasan..."
                     class="w-full border border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg px-3 py-2 text-sm"></textarea>
@@ -79,10 +92,16 @@
                     </button>
                 </div>
 
-                <button type="submit" 
-                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm">
-                    Submit
-                </button>
+                <div class="space-x-2">
+                    <button type="submit" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm">
+                        Submit
+                    </button>
+                    <a href="{{ route('admin.corrections.index') }}" 
+                        class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium shadow-sm">
+                        Back
+                    </a>
+                </div>
             </div>
         </form>
 

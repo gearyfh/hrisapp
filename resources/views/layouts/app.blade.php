@@ -10,20 +10,32 @@
         .dropdown:hover .dropdown-menu {
             display: block;
         }
+        
+
+        /* Animasi untuk toggle sidebar */
+        .sidebar-collapsed {
+            width: 0;
+            overflow: hidden;
+            transition: width 0.3s ease;
+        }
+
+        .sidebar-expanded {
+            width: 16rem; /* 64 (Tailwind w-64) */
+            transition: width 0.3s ease;
+        }
     </style>
 </head>
 <body>
     <div class="flex min-h-screen">
         <!-- Sidebar -->
-        <aside class="w-64 bg-gray-900 text-white min-h-screen p-4 flex flex-col">
+        <aside id="sidebar" class="sidebar-expanded bg-gray-900 text-white min-h-screen p-4 flex flex-col">
             <h2 class="text-xl font-bold mb-6">Menu</h2>
 
             <a href="/dashboard" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Dashboard</a>
-            
 
             {{-- Superadmin --}}
             @if(auth()->user()->role === 'superadmin')
-                <a href="{{ route('employees.absensi') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Absensi</a>
+                <a href="{{ route('employees.attendance.absensi') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Absensi</a>
                 <a href="/company" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Company</a>
                 <a href="/karyawan" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Karyawan</a>
                 <a href="/dokumen" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Dokumen</a>
@@ -32,20 +44,9 @@
             @elseif(auth()->user()->role === 'admin')
                 <a href="/karyawan" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Karyawan</a>
                 <a href="{{ route('admin.documents.index') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Dokumen</a>
-                <a href="{{ route('admin.approvals.cuti') }}" 
-                            class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">
-                            Cuti Karyawan
-                            </a>
-
-                            <a href="{{ route('admin.approvals.izin_sakit') }}" 
-                            class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">
-                            Izin / Sakit Karyawan
-                            </a>
-
-                            <a href="{{ route('admin.corrections.index') }}" 
-                            class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">
-                            Koreksi Absensi Karyawan
-                            </a>
+                <a href="{{ route('admin.approvals.cuti') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Cuti Karyawan</a>
+                <a href="{{ route('admin.approvals.izin_sakit') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Izin / Sakit Karyawan</a>
+                <a href="{{ route('admin.corrections.index') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Koreksi Absensi Karyawan</a>
 
                             <a href="{{ route('admin.overtimes.index') }}" 
                             class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">
@@ -59,8 +60,8 @@
 
             {{-- Employee --}}
             @elseif(auth()->user()->role === 'employee')
-                <a href="{{ route('employees.absensi') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Absensi</a>
-                <a href="{{ route('employees.show_documents', Auth::user()->id) }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Dokumen</a>
+                <a href="{{ route('employees.attendance.absensi') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Absensi</a>
+                <a href="{{ route('employees.documents.show_documents', Auth::user()->id) }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Dokumen</a>
                 <a href="{{ route('sick.index') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Izin/Sakit</a>
                 <a href="{{ route('leave.index') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Cuti</a>
                 <a href="{{ route('employees.corrections.index') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Koreksi Absensi</a>
@@ -71,11 +72,21 @@
         <!-- Main Content -->
         <div class="flex-1 flex flex-col">
             <!-- Navbar -->
-            <nav class="bg-gray-700 shadow px-6 py-4 flex justify-between items-center">
-                <div class="text-xl text-white font-bold">HRIS Dashboard</div>
+            <nav class="bg-gray-900 shadow px-6 py-4 flex justify-between items-center">
+                <div class="flex items-center space-x-4">
+                    <!-- Tombol Hamburger -->
+                    <button id="toggleSidebar" class="text-white focus:outline-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
 
+                    <div class="text-xl text-white font-bold">HRIS Dashboard</div>
+                </div>
+
+                <!-- User Menu -->
                 <div class="relative" id="user-menu-container">
-                    <!-- Avatar -->
                     <div id="user-menu-button" class="flex items-center space-x-3 cursor-pointer">
                         <span class="text-white">{{ Auth::user()->name }}</span>
                         <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=0D8ABC&color=fff"
@@ -97,29 +108,33 @@
                 </div>
             </nav>
 
-
             <!-- Page Content -->
-            <main class="p-6 flex-1">
+            <main class="p-6 flex-1 bg-gray-200">
                 @yield('content')
             </main>
         </div>
     </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const button = document.getElementById('user-menu-button');
-            const menu = document.getElementById('dropdown-menu');
-            const container = document.getElementById('user-menu-container');
 
+    <script>
+        // Sidebar toggle
+        document.getElementById('toggleSidebar').addEventListener('click', function () {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('sidebar-expanded');
+            sidebar.classList.toggle('sidebar-collapsed');
+        });
+
+        // Dropdown logic
+        document.addEventListener('DOMContentLoaded', function () {
+            const container = document.getElementById('user-menu-container');
+            const menu = document.getElementById('dropdown-menu');
             let menuVisible = false;
 
-            // Saat di-hover avatar → tampilkan menu
             container.addEventListener('mouseenter', () => {
                 menu.classList.remove('hidden');
                 setTimeout(() => menu.classList.remove('opacity-0'), 10);
                 menuVisible = true;
             });
 
-            // Saat klik di luar → sembunyikan menu
             document.addEventListener('click', (e) => {
                 if (menuVisible && !container.contains(e.target)) {
                     menu.classList.add('opacity-0');
@@ -129,6 +144,6 @@
             });
         });
     </script>
-@yield('scripts')
+    @yield('scripts')
 </body>
 </html>

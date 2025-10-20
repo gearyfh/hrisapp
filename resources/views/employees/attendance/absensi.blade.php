@@ -2,13 +2,11 @@
 
 @section('content')
 <div class="container mx-auto px-4">
-    <h1 class="text-2xl font-bold mb-6">Absensi</h1>
-
     <div class="flex flex-col md:flex-row gap-6">
         {{-- Card Absensi --}}
-        <div class="bg-gray-200 p-6 rounded-2xl shadow-lg w-full md:w-1/2 self-start">
+        <div class="bg-white p-6 rounded-2xl shadow-lg w-full md:w-1/2 self-start">
             <h2 class="text-2xl font-semibold mb-4 text-center">Absensi</h2>
-            <hr class="border-black mb-4">
+            <hr class="border-gray-400 mb-4">
 
             <div class="grid grid-cols-2 divide-x divide-black text-center">
                 {{-- Check In --}}
@@ -26,10 +24,10 @@
                     </p>
 
                     @if(!$attendance)
-                        <form action="{{ route('employees.absensi_create') }}" method="GET">
+                        <form action="{{ route('employees.attendance.absensi_create') }}" method="GET">
                             @csrf
                             <button type="submit"
-                                class="bg-black text-white px-6 py-2 rounded-full hover:bg-green-600 transition">
+                                class="border border-gray-400 text-black px-6 py-2 rounded-full hover:bg-green-600 hover:text-white hover:border-none transition">
                                 Check In
                             </button>
                         </form>
@@ -58,7 +56,7 @@
                         <form action="{{ route('employees.checkout') }}" method="POST" class="checkout-form">
                             @csrf
                             <button type="submit"
-                                class="checkout-btn bg-black text-white px-6 py-2 rounded-full hover:bg-red-600 transition">
+                                class="checkout-btn border border-gray-400 text-black px-6 py-2 rounded-full hover:bg-red-600 hover:text-white hover:border-none transition">
                                 Check Out
                             </button>
                         </form>
@@ -76,7 +74,7 @@
         </div>
 
         {{-- History --}}
-        <div class="bg-gray-200 p-6 rounded-2xl shadow-lg w-full md:w-3/4 overflow-x-auto">
+        <div class="bg-white p-6 rounded-2xl shadow-lg w-full md:w-3/4 overflow-x-auto">
             <h2 class="text-lg font-semibold mb-4">History Absensi</h2>
 
             <table class="w-full border-collapse text-sm text-gray-700">
@@ -92,7 +90,7 @@
                 </thead>
                 <tbody class="bg-gray-100 divide-y divide-gray-300">
                     @forelse ($attendances as $absen)
-                        <tr class="hover:bg-gray-200 transition">
+                        <tr class="hover:bg-white transition">
                             <td class="px-4 py-2">{{ $absen->jenis }}</td>
                             <td class="px-4 py-2">{{ $absen->tanggal_masuk }}</td>
                             <td class="px-4 py-2">{{ $absen->jam_masuk }}</td>

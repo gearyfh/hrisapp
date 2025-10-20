@@ -17,7 +17,7 @@
             <p class="text-gray-600 mb-4">
                 Status: <span class="font-bold text-red-600">Belum Check In</span>
             </p>
-            <form action="{{ route('employees.absensi_create') }}" method="GET">
+            <form action="{{ route('employees.attendance.absensi_create') }}" method="GET">
                 @csrf
                 <button type="submit" class="bg-black text-white px-6 py-2 rounded w-full hover:bg-gray-800"">
                     Check In

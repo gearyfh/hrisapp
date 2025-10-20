@@ -22,6 +22,7 @@ return new class extends Migration
             $table->date('tanggal_keluar')->nullable();
             $table->time('jam_keluar')->nullable();
             $table->string('lokasi')->nullable();
+            $table->decimal('work_hours', 5, 2)->default(8); // default jam kerja 8
             $table->boolean('is_corrected')->default(false);
             $table->timestamps();
         });

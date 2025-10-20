@@ -47,6 +47,16 @@
                             Koreksi Absensi Karyawan
                             </a>
 
+                            <a href="{{ route('admin.overtimes.index') }}" 
+                            class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">
+                            Jam Lembur Karyawan
+                            </a>
+
+                            <a href="{{ route('admin.data.absensi.index') }}" 
+                            class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">
+                            Jam Karyawan
+                            </a>
+
             {{-- Employee --}}
             @elseif(auth()->user()->role === 'employee')
                 <a href="{{ route('employees.absensi') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Absensi</a>

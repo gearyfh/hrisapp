@@ -49,4 +49,18 @@ class EmployeeController extends Controller
         $employee = Employee::with('documents')->findOrFail($id);
         return view('employees.show_documents', compact('employee'));
     }
+
+    public function rekap(Request $request)
+{
+    $employee = Auth::user()->employee;
+
+$totalHours = $employee->getTotalWorkingHours();
+    $month = $request->get('month', now()->month);
+    $year = $request->get('year', now()->year);
+
+    $rekap = $employee->getTotalWorkingHours($month, $year);
+
+    return view('admin.data.absensi.index', compact('rekap', 'month', 'year'));
+}
+
 }

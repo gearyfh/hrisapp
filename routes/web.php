@@ -169,10 +169,15 @@ Route::middleware(['auth', 'role:employee'])->prefix('employee')->group(function
 
 
 Route::prefix('admin')->middleware(['auth'])->group(function () {
-    Route::get('/approvals/overtimes', [ApprovalController::class, 'overtimeIndex'])->name('admin.overtime.index');
-    Route::get('/approvals/overtimes/{id}', [ApprovalController::class, 'overtimeShow'])->name('admin.overtime.show');
+    Route::get('/approvals/overtimes', [ApprovalController::class, 'overtimeIndex'])->name('admin.overtimes.index');
+    Route::get('/approvals/overtimes/{id}', [ApprovalController::class, 'overtimeShow'])->name('admin.overtimes.show');
     Route::post('/approvals/overtimes/{id}', [ApprovalController::class, 'overtimeUpdate'])->name('admin.overtimes.update');
 });
+
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
+    Route::get('/rekap', [AdminController::class, 'indexTotalAbsensi'])->name('admin.data.absensi.index');
+});
+
 
 
 

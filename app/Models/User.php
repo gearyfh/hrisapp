@@ -67,5 +67,6 @@ class User extends Authenticatable
             $user->employee()->delete();
         });
     }
+    
 
 }

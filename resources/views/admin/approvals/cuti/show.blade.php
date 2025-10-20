@@ -104,21 +104,17 @@
 
             <div class="flex flex-wrap justify-between items-center pt-2">
                 <div class="flex flex-wrap gap-2">
-                    <button type="button" onclick="setStatus('approved')"
+                    <button type="submit" onclick="setStatus('approved')"
                         class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg text-sm font-medium shadow-sm transition">
                         Approve
                     </button>
-                    <button type="button" onclick="setStatus('rejected')"
+                    <button type="submit" onclick="setStatus('rejected')"
                         class="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg text-sm font-medium shadow-sm transition">
                         Reject
                     </button>
                 </div>
 
                 <div class="flex flex-wrap gap-2">
-                    <button type="submit"
-                        class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm font-medium shadow-sm transition">
-                        Submit
-                    </button>
                     <a href="{{ route('admin.approvals.cuti') }}"
                         class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2 rounded-lg text-sm font-medium shadow-sm transition">
                         Back

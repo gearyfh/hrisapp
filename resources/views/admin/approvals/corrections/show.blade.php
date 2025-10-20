@@ -82,21 +82,17 @@
 
             <div class="flex justify-between items-center pt-2">
                 <div class="space-x-2">
-                    <button type="button" onclick="setStatus('approved')" 
+                    <button type="submit" onclick="setStatus('approved')" 
                         class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm">
                         Approve
                     </button>
-                    <button type="button" onclick="setStatus('rejected')" 
+                    <button type="submit" onclick="setStatus('rejected')" 
                         class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm">
                         Reject
                     </button>
                 </div>
 
                 <div class="space-x-2">
-                    <button type="submit" 
-                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm">
-                        Submit
-                    </button>
                     <a href="{{ route('admin.corrections.index') }}" 
                         class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium shadow-sm">
                         Back

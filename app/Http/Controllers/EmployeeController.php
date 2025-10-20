@@ -7,6 +7,8 @@ use App\Models\Employee;
 use App\Models\LeaveRequest;
 use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+
 
 class EmployeeController extends Controller
 {
@@ -52,16 +54,16 @@ class EmployeeController extends Controller
     }
 
     public function rekap(Request $request)
-{
-    $employee = Auth::user()->employee;
+    {
+        $employee = Auth::user()->employee;
 
-$totalHours = $employee->getTotalWorkingHours();
-    $month = $request->get('month', now()->month);
-    $year = $request->get('year', now()->year);
+    $totalHours = $employee->getTotalWorkingHours();
+        $month = $request->get('month', now()->month);
+        $year = $request->get('year', now()->year);
 
-    $rekap = $employee->getTotalWorkingHours($month, $year);
+        $rekap = $employee->getTotalWorkingHours($month, $year);
 
-    return view('admin.data.absensi.index', compact('rekap', 'month', 'year'));
-}
+        return view('admin.data.absensi.index', compact('rekap', 'month', 'year'));
+    }
 
 }

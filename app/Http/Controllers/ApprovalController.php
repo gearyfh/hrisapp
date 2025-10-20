@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\OvertimeRequest;
 use App\Models\AttendanceCorrection;
 use App\Models\LeaveRequest;
+use App\Helpers\NotificationHelper;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -87,6 +89,11 @@ class ApprovalController extends Controller
             'approved_at' => now(),
         ]);
 
+        $employeeId = $leave->employee_id;
+        $title = $request->status === 'approved' ? 'Pengajuan Diterima ✅' : 'Pengajuan Ditolak ❌';
+        $message = "Pengajuan {$leave->leaveType->name} kamu dari {$leave->start_date} hingga {$leave->end_date} telah {$request->status}.";
+        NotificationHelper::send($employeeId, $title, $message);
+
         if ($leave->leaveType->type === 'cuti') {
             return redirect()->route('admin.approvals.cuti')
                 ->with('success', '✅ Status pengajuan cuti berhasil diperbarui.');
@@ -111,6 +118,11 @@ class ApprovalController extends Controller
             'approved_at' => now(),
         ]);
 
+        $employeeId = $leave->employee_id;
+        $title = $request->status === 'approved' ? 'Pengajuan Diterima ✅' : 'Pengajuan Ditolak ❌';
+        $message = "Pengajuan {$leave->leaveType->name} kamu dari {$leave->start_date} hingga {$leave->end_date} telah {$request->status}.";
+        NotificationHelper::send($employeeId, $title, $message);
+
         return back()->with('success', '✅ Pengajuan telah disetujui.');
     }
 
@@ -128,6 +140,11 @@ class ApprovalController extends Controller
             'approved_by' => Auth::id(),
             'approved_at' => now(),
         ]);
+
+        $employeeId = $leave->employee_id;
+        $title = $request->status === 'approved' ? 'Pengajuan Diterima ✅' : 'Pengajuan Ditolak ❌';
+        $message = "Pengajuan {$leave->leaveType->name} kamu dari {$leave->start_date} hingga {$leave->end_date} telah {$request->status}.";
+        NotificationHelper::send($employeeId, $title, $message);
 
         return back()->with('error', '❌ Pengajuan telah ditolak.');
     }
@@ -185,6 +202,12 @@ class ApprovalController extends Controller
             ]);
         }
 
+        $employeeId = $correction->employee_id;
+        $title = $request->status === 'approved' ? 'Koreksi Absensi Diterima ✅' : 'Koreksi Absensi Ditolak ❌';
+        $message = "Pengajuan koreksi absensi kamu untuk tanggal {$correction->old_date} telah {$request->status}.";
+        NotificationHelper::send($employeeId, $title, $message);
+
+
         return redirect()->route('admin.corrections.index')
             ->with('success', '✅ Status koreksi absensi berhasil diperbarui.');
     }
@@ -228,6 +251,11 @@ class ApprovalController extends Controller
             'approved_by' => Auth::id(),
             'approved_at' => now(),
         ]);
+
+        $employeeId = $overtime->employee_id;
+        $title = $request->status === 'approved' ? 'Lembur Disetujui ✅' : 'Lembur Ditolak ❌';
+        $message = "Pengajuan lembur kamu pada {$overtime->date} telah {$request->status}.";
+        NotificationHelper::send($employeeId, $title, $message);
 
         return redirect()->route('admin.overtimes.index')
             ->with('success', '✅ Status pengajuan lembur berhasil diperbarui.');

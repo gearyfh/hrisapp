@@ -9,7 +9,12 @@ class NotificationController extends Controller
 {
     public function index()
     {
-        $employeeId = Auth::id();
+        $employeeId = Auth::user()->employee->id ?? null;
+
+        if (!$employeeId) {
+            abort(403, 'Data karyawan tidak ditemukan.');
+        }
+
 
         $notifications = Notification::where('employee_id', $employeeId)
             ->latest()

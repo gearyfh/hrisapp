@@ -35,11 +35,11 @@
                             <td class="p-4 text-gray-700">{{ $correction->old_clock_out ?? '-' }}</td>
                             <td class="p-4 text-gray-700">{{ $correction->new_clock_out ?? '-' }}</td>
                             <td class="p-4">
-                                @if($leave->status == 'pending')
+                                @if($correction->status == 'pending')
                                 <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-xs font-medium">Pending</span>
-                                @elseif($leave->status == 'approved')
+                                @elseif($correction->status == 'approved')
                                     <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-medium">Approved</span>
-                                @elseif($leave->status == 'rejected')
+                                @elseif($correction->status == 'rejected')
                                     <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-medium">Rejected</span>
                                 @else
                                     <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs font-medium">-</span>

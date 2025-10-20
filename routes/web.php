@@ -174,7 +174,6 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
     Route::post('/approvals/overtimes/{id}', [ApprovalController::class, 'overtimeUpdate'])->name('admin.overtimes.update');
 });
 
-<<<<<<< HEAD
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/rekap', [AdminController::class, 'indexTotalAbsensi'])->name('admin.data.absensi.index');
 });
@@ -186,6 +185,3 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 
 
 require __DIR__.'/auth.php';
-=======
-require __DIR__ . '/auth.php';
->>>>>>> 3d46aee9495066bbdb2dc6eec458c36867eacd2f

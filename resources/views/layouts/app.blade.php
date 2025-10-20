@@ -6,24 +6,31 @@
     <title>HRIS App</title>
     @vite('resources/css/app.css')
     <style>
-        /* Dropdown muncul saat hover */
-        .dropdown:hover .dropdown-menu {
-            display: block;
-        }
-        
+    /* Sidebar Transition */
+    #sidebar {
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
 
-        /* Animasi untuk toggle sidebar */
-        .sidebar-collapsed {
-            width: 0;
-            overflow: hidden;
-            transition: width 0.3s ease;
-        }
+    /* Saat tertutup */
+    .sidebar-collapsed {
+        width: 0 !important;
+        padding: 0 !important;
+        opacity: 0;
+    }
 
-        .sidebar-expanded {
-            width: 16rem; /* 64 (Tailwind w-64) */
-            transition: width 0.3s ease;
-        }
-    </style>
+    /* Saat terbuka */
+    .sidebar-expanded {
+        width: 16rem; /* sama seperti w-64 */
+        opacity: 1;
+    }
+
+    /* Dropdown muncul saat hover */
+    .dropdown:hover .dropdown-menu {
+        display: block;
+    }
+</style>
+
 </head>
 <body>
     <div class="flex min-h-screen">
@@ -62,10 +69,51 @@
             @elseif(auth()->user()->role === 'employee')
                 <a href="{{ route('employees.attendance.absensi') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Absensi</a>
                 <a href="{{ route('employees.documents.show_documents', Auth::user()->id) }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Dokumen</a>
-                <a href="{{ route('sick.index') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Izin/Sakit</a>
+                {{-- <a href="{{ route('sick.index') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Izin/Sakit</a>
                 <a href="{{ route('leave.index') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Cuti</a>
                 <a href="{{ route('employees.corrections.index') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Koreksi Absensi</a>
-                <a href="{{ route('employees.overtime.index') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Pengajuan Lembur</a>
+                <a href="{{ route('employees.overtime.index') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Pengajuan Lembur</a> --}}
+
+                <div x-data="{ open: false }" class="mb-2">
+    <!-- Tombol utama -->
+    <button @click="open = !open"
+        class="flex justify-between items-center w-full text-left py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg focus:outline-none">
+        <span>Pengajuan</span>
+        <svg xmlns="http://www.w3.org/2000/svg"
+            :class="{ 'rotate-180': open }"
+            class="w-5 h-5 transform transition-transform duration-200"
+            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19 9l-7 7-7-7" />
+        </svg>
+    </button>
+
+    <!-- Submenu -->
+    <div
+        x-show="open"
+        x-transition
+        class="pl-6 mt-1 space-y-1"
+        @click.away="open = false"
+    >
+        <a href="{{ route('sick.index') }}" 
+           class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-base">
+           Izin / Sakit
+        </a>
+        <a href="{{ route('leave.index') }}" 
+           class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-base">
+           Cuti
+        </a>
+        <a href="{{ route('employees.corrections.index') }}" 
+           class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-base">
+           Koreksi Absensi
+        </a>
+        <a href="{{ route('employees.overtime.index') }}" 
+           class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-base">
+           Lembur
+        </a>
+    </div>
+</div>
+
             @endif
         </aside>
 
@@ -116,34 +164,42 @@
     </div>
 
     <script>
-        // Sidebar toggle
-        document.getElementById('toggleSidebar').addEventListener('click', function () {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('sidebar-expanded');
-            sidebar.classList.toggle('sidebar-collapsed');
+    document.getElementById('toggleSidebar').addEventListener('click', function () {
+        const sidebar = document.getElementById('sidebar');
+        const main = document.querySelector('main');
+        const nav = document.querySelector('nav');
+
+        // Toggle class collapsed/expanded
+        sidebar.classList.toggle('sidebar-collapsed');
+        sidebar.classList.toggle('sidebar-expanded');
+    });
+
+    // Dropdown logic
+    document.addEventListener('DOMContentLoaded', function () {
+        const container = document.getElementById('user-menu-container');
+        const menu = document.getElementById('dropdown-menu');
+        let menuVisible = false;
+
+        container.addEventListener('mouseenter', () => {
+            menu.classList.remove('hidden');
+            setTimeout(() => menu.classList.remove('opacity-0'), 10);
+            menuVisible = true;
         });
 
-        // Dropdown logic
-        document.addEventListener('DOMContentLoaded', function () {
-            const container = document.getElementById('user-menu-container');
-            const menu = document.getElementById('dropdown-menu');
-            let menuVisible = false;
-
-            container.addEventListener('mouseenter', () => {
-                menu.classList.remove('hidden');
-                setTimeout(() => menu.classList.remove('opacity-0'), 10);
-                menuVisible = true;
-            });
-
-            document.addEventListener('click', (e) => {
-                if (menuVisible && !container.contains(e.target)) {
-                    menu.classList.add('opacity-0');
-                    setTimeout(() => menu.classList.add('hidden'), 150);
-                    menuVisible = false;
-                }
-            });
+        document.addEventListener('click', (e) => {
+            if (menuVisible && !container.contains(e.target)) {
+                menu.classList.add('opacity-0');
+                setTimeout(() => menu.classList.add('hidden'), 150);
+                menuVisible = false;
+            }
         });
-    </script>
+    });
+</script>
+
     @yield('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js" defer></script>
+    {{-- <script src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js" defer></script> --}}
+
+
 </body>
 </html>

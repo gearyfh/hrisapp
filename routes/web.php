@@ -13,6 +13,7 @@ use App\Http\Controllers\OvertimeRequestController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\EmployeeCreateController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -125,6 +126,15 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/documents', [AdminDocumentController::class, 'index'])->name('admin.documents.index');
     Route::get('/documents/create', [AdminDocumentController::class, 'create'])->name('admin.documents.create');
     Route::post('/documents', [AdminDocumentController::class, 'store'])->name('admin.documents.store');
+
+    Route::get('/employees', [EmployeeCreateController::class, 'index'])->name('admin.employee.index');
+    Route::get('/employees/create', [EmployeeCreateController::class, 'create'])->name('admin.employee.create');
+    Route::post('/employees', [EmployeeCreateController::class, 'store'])->name('admin.employee.store');
+    Route::get('/employees/{id}/edit', [EmployeeCreateController::class, 'edit'])->name('admin.employee.edit');
+    Route::put('/employees/{id}', [EmployeeCreateController::class, 'update'])->name('admin.employee.update');
+    Route::delete('/employees/{id}', [EmployeeCreateController::class, 'destroy'])->name('admin.employee.destroy');
+
+
 
 });
 

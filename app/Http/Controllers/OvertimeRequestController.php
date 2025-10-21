@@ -50,7 +50,7 @@ class OvertimeRequestController extends Controller
         $end = date('H:i', $start + ($durationHours * 3600));
 
         // ✅ gunakan relasi overtimes(), bukan overtimeRequest()
-        $employee->overtimeRequest()->create([
+        $employee->overtimeRequests()->create([
             'attendance_id' => $request->attendance_id,
             'date' => $request->date,
             'start_time' => $request->start_time,

@@ -2,38 +2,57 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Attendance;
-use App\Models\OvertimeRequest;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Employee;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
 class ReportController extends Controller
 {
-    public function monthlyReport(Request $request)
+    public function indexTotalAbsensi(Request $request)
     {
-        $employee = Auth::user()->employee;
-        $month = $request->month ?? now()->format('Y-m');
+        // Pastikan variabel $month selalu ada
+        $month = $request->input('month') ?? now()->format('Y-m');
 
-        // Ambil awal dan akhir bulan
-        $start = Carbon::parse($month . '-01')->startOfMonth();
-        $end = Carbon::parse($month . '-01')->endOfMonth();
+        // Tentukan awal dan akhir bulan berdasarkan input
+        $start = Carbon::createFromFormat('Y-m', $month)->startOfMonth();
+        $end = Carbon::createFromFormat('Y-m', $month)->endOfMonth();
 
-        // Ambil semua attendance bulan itu
-        $attendances = Attendance::where('employee_id', $employee->id)
-            ->whereBetween('tanggal_masuk', [$start, $end])
-            ->get();
+        // Ambil semua employee beserta attendance & overtime mereka
+        $employees = Employee::with(['attendances', 'overtimeRequests'])->get();
 
-        // Hitung lembur yang approved
-        $overtimes = OvertimeRequest::where('employee_id', $employee->id)
-            ->where('status', 'approved')
-            ->whereBetween('date', [$start, $end])
-            ->sum('duration');
+        $rekap = [];
 
-        // Hitung total jam kerja
-        $totalDays = $attendances->count();
-        $totalWorkHours = ($totalDays * 8) + $overtimes;
+        foreach ($employees as $employee) {
+            // Filter data attendance sesuai bulan
+            $attendances = $employee->attendances
+                ->whereBetween('tanggal_masuk', [$start->toDateString(), $end->toDateString()]);
 
-        return view('employees.reports.monthly', compact('month', 'totalDays', 'totalWorkHours', 'overtimes'));
+            // Hitung total jam kerja (dari work_hours)
+            $totalWorkHours = $attendances->sum(function ($a) {
+                return (float) ($a->work_hours ?? 0);
+            });
+
+            $hari_kerja = $attendances->count();
+
+            // Hitung total lembur (approved only)
+            $totalOvertime = $employee->overtimeRequests()
+                ->where('status', 'approved')
+                ->whereBetween('date', [$start, $end])
+                ->sum('duration');
+            // dd($totalOvertime, $employee->overtimeRequests()->where('status', 'approved')->pluck('date'));           
+
+
+            // Tambahkan ke array rekap
+            $rekap[] = [
+                'nama' => $employee->name ?? '-',
+                'hari_kerja' => $hari_kerja,
+                'jam_kerja' => $totalWorkHours,
+                'jam_lembur' => $totalOvertime,
+                'total_jam' => $totalWorkHours + $totalOvertime,
+            ];
+        }
+
+        return view('admin.data.absensi.index', compact('rekap', 'month'));
     }
 }
+    

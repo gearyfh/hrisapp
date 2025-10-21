@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Attendance;
+use Carbon\Carbon;
 
 class AbsensiController extends Controller
 {
@@ -16,23 +17,18 @@ class AbsensiController extends Controller
             return redirect()->back()->with('error', 'Anda bukan employee!');
         }
 
-        $employeeId = $employee->id;
-
-        // Ambil absensi aktif (belum checkout)
-        $attendance = Attendance::where('employee_id', $employeeId)
+        $attendance = Attendance::where('employee_id', $employee->id)
             ->whereNull('jam_keluar')
             ->latest()
             ->first();
 
-        // Ambil semua riwayat absensi
-        $attendances = Attendance::where('employee_id', $employeeId)
+        $attendances = Attendance::where('employee_id', $employee->id)
             ->orderBy('tanggal_masuk', 'desc')
             ->get();
 
         return view('employees.attendance.absensi', compact('attendance', 'attendances'));
     }
 
-    // 🔹 BALIKIN CREATE UNTUK FORM absensi_create.blade.php
     public function create()
     {
         $employee = Auth::user()->employee;
@@ -42,7 +38,6 @@ class AbsensiController extends Controller
                              ->with('error', 'Anda bukan employee!');
         }
 
-        // Cek apakah masih ada absensi aktif (belum checkout)
         $active = Attendance::where('employee_id', $employee->id)
             ->whereNull('jam_keluar')
             ->first();
@@ -55,7 +50,6 @@ class AbsensiController extends Controller
         return view('employees.attendance.absensi_create');
     }
 
-    // 🔹 PROSES CHECK-IN
     public function checkin(Request $request)
     {
         $employee = Auth::user()->employee;
@@ -80,7 +74,6 @@ class AbsensiController extends Controller
         return redirect()->route('employees.attendance.absensi')->with('success', 'Check-in berhasil!');
     }
 
-    // 🔹 PROSES CHECK-OUT
     public function checkout()
     {
         $employee = Auth::user()->employee;
@@ -94,9 +87,28 @@ class AbsensiController extends Controller
             return redirect()->back()->with('error', 'Anda belum check-in hari ini.');
         }
 
+        // 🔹 Hitung total jam kerja dalam jam (bisa desimal)
+        $jamMasuk = Carbon::parse($attendance->jam_masuk);
+        $jamKeluar = Carbon::now();
+        $selisihMenit = $jamKeluar->diffInMinutes($jamMasuk);
+        $selisihJam = $selisihMenit / 60; // ubah ke jam desimal
+
+        // 🔹 Aturan kerja:
+        // ≥ 9 jam  → hitung 8 jam kerja efektif
+        // ≤ 8 jam → dikurangi 1 jam istirahat (tapi minimal 0)
+        if ($selisihJam >= 9) {
+            $workHours = 8;
+        } elseif ($selisihJam <= 8) {
+            $workHours = max($selisihJam - 1, 0);
+        } else {
+            $workHours = $selisihJam;
+        }
+
+        // 🔹 Update attendance
         $attendance->update([
             'tanggal_keluar' => now()->format('Y-m-d'),
             'jam_keluar'     => now()->format('H:i:s'),
+            'work_hours'     => round($workHours, 2), // simpan dua angka di belakang koma
         ]);
 
         return redirect()->route('employees.attendance.absensi')->with('success', 'Check-out berhasil!');

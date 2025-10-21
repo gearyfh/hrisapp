@@ -8,17 +8,17 @@ class Employee extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-            'id',
-            'company_id',
-            'user_id',
-            'name',
-            'birth_date',
-            'address',
-            'phone',
-            'nik',
-            'npwp',
-            'hire_date',
-            'status',
+        'id',
+        'company_id',
+        'user_id',
+        'name',
+        'birth_date',
+        'address',
+        'phone',
+        'nik',
+        'npwp',
+        'hire_date',
+        'status',
     ];
 
     public function company()
@@ -31,7 +31,7 @@ class Employee extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-        public function attendances()
+    public function attendances()
     {
         return $this->hasMany(Attendance::class);
     }
@@ -41,12 +41,12 @@ class Employee extends Model
         return $this->hasMany(Document::class, 'employee_id');
     }
 
-    public function overtimeRequest()
-{
-    return $this->hasMany(OvertimeRequest::class);
-}
+    public function overtimeRequests()
+    {
+        return $this->hasMany(OvertimeRequest::class);
+    }
 
-public function leaveRequests()
+    public function leaveRequests()
     {
         return $this->hasMany(LeaveRequest::class);
     }
@@ -56,33 +56,31 @@ public function leaveRequests()
         return $this->hasMany(AttendanceCorrection::class);
     }
 
-public function getTotalWorkingHours($month = null, $year = null)
-{
-    $month = $month ?? now()->month;
-    $year = $year ?? now()->year;
+    /**
+     * 🔹 Hitung total jam kerja berdasarkan work_hours di tabel attendance
+     */
+    public function getTotalWorkingHours($month = null, $year = null)
+    {
+        $month = $month ?? now()->month;
+        $year = $year ?? now()->year;
 
-    // Hitung jumlah hari masuk dari attendance
-    $attendanceCount = $this->attendances()
-        ->whereYear('tanggal_masuk', $year)
-        ->whereMonth('tanggal_masuk', $month)
-        ->count();
+        // ✅ Jumlah total work_hours dari attendance
+        $attendanceHours = $this->attendances()
+            ->whereYear('tanggal_masuk', $year)
+            ->whereMonth('tanggal_masuk', $month)
+            ->sum('work_hours');
 
-    // Tiap hari dianggap 8 jam
-    $attendanceHours = $attendanceCount * 8;
+        // ✅ Hitung total lembur yang disetujui
+        $overtimeHours = $this->overtimeRequests()
+            ->where('status', 'approved')
+            ->whereYear('date', $year)
+            ->whereMonth('date', $month)
+            ->sum('duration');
 
-    // Hitung total lembur yang disetujui
-    $overtimeHours = $this->overtimeRequests()
-        ->where('status', 'approved')
-        ->whereYear('date', $year)
-        ->whereMonth('date', $month)
-        ->sum('duration');
-
-    return [
-        'attendance_hours' => $attendanceHours,
-        'overtime_hours' => $overtimeHours,
-        'total_hours' => $attendanceHours + $overtimeHours,
-    ];
-}
-
-
+        return [
+            'attendance_hours' => $attendanceHours ?? 0,
+            'overtime_hours' => $overtimeHours ?? 0,
+            'total_hours' => ($attendanceHours ?? 0) + ($overtimeHours ?? 0),
+        ];
+    }
 }

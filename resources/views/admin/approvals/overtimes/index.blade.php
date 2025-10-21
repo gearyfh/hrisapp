@@ -18,7 +18,7 @@
         <tbody>
             @foreach($overtimes as $overtime)
             <tr>
-                <td class="border px-3 py-2">{{ $overtime->employee->nama ?? '-' }}</td>
+                <td class="border px-3 py-2">{{ $overtime->employee->name ?? '-' }}</td>
                 <td class="border px-3 py-2">{{ $overtime->date }}</td>
                 <td class="border px-3 py-2">{{ $overtime->duration }} jam</td>
                 <td class="border px-3 py-2">{{ $overtime->reason ?? '-' }}</td>

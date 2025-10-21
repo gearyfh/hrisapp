@@ -10,35 +10,69 @@
             <div>
                 <label class="block text-gray-600 font-medium mb-1">Nama</label>
                 <input type="text" value="{{ Auth::user()->name }}" disabled
-                       class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-not-allowed">
+                       class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 cursor-not-allowed">
             </div>
 
             <div>
                 <label class="block text-gray-600 font-medium mb-1">Email</label>
                 <input type="text" value="{{ Auth::user()->email }}" disabled
-                       class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-not-allowed">
+                       class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 cursor-not-allowed">
             </div>
 
             <div>
                 <label class="block text-gray-600 font-medium mb-1">Role</label>
                 <input type="text" value="{{ ucfirst(Auth::user()->role) }}" disabled
-                       class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-not-allowed">
-            </div>
-
-            <div>
-                <label class="block text-gray-600 font-medium mb-1">Perusahaan</label>
-                <input type="text" value="{{ ucfirst(Auth::user()->company->company_name) }}" disabled
-                       class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-not-allowed">
+                       class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 cursor-not-allowed">
             </div>
         </div>
 
         <div class="flex flex-col items-center justify-center">
             <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=0D8ABC&color=fff"
-                 alt="User Avatar" class="w-28 h-28 rounded-full border-4 border-blue-200 shadow-md mb-3 transition-all duration-300 hover:scale-105">
+                 alt="User Avatar" class="w-28 h-28 rounded-full border-4 border-blue-200 shadow-md mb-3 hover:scale-105 transition">
             <p class="text-gray-700 font-semibold">{{ Auth::user()->name }}</p>
             <span class="text-sm text-gray-500 capitalize">{{ Auth::user()->role }}</span>
         </div>
     </div>
+
+    <!-- Perusahaan -->
+    <div class="mb-6">
+        <label class="block text-gray-600 font-medium mb-1">Perusahaan</label>
+        <input type="text" 
+               value="{{ Auth::user()->company ? ucfirst(Auth::user()->company->company_name) : '-' }}" 
+               disabled
+               class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 cursor-not-allowed">
+    </div>
+
+    <!-- Data Karyawan (jika employee) -->
+    @if(Auth::user()->role === 'employee' && Auth::user()->employee)
+        <div class="bg-gray-50 border border-gray-200 rounded-2xl p-6 mb-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Data Karyawan</h2>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-gray-600 text-sm mb-1">NIK</label>
+                    <input type="text" value="{{ Auth::user()->employee->nik ?? '-' }}" disabled
+                           class="w-full bg-white border border-gray-300 rounded-xl p-3 cursor-not-allowed">
+                </div>
+                <div>
+                    <label class="block text-gray-600 text-sm mb-1">Tanggal Lahir</label>
+                    <input type="text" value="{{ Auth::user()->employee->birth_date ?? '-' }}" disabled
+                           class="w-full bg-white border border-gray-300 rounded-xl p-3 cursor-not-allowed">
+                </div>
+                <div>
+                    <label class="block text-gray-600 text-sm mb-1">Nomor HP</label>
+                    <input type="text" value="{{ Auth::user()->employee->phone ?? '-' }}" disabled
+                           class="w-full bg-white border border-gray-300 rounded-xl p-3 cursor-not-allowed">
+                </div>
+                <div>
+                    <label class="block text-gray-600 text-sm mb-1">Alamat</label>
+                    <textarea disabled
+                              class="w-full bg-white border border-gray-300 rounded-xl p-3 cursor-not-allowed resize-none"
+                              rows="2">{{ Auth::user()->employee->address ?? '-' }}</textarea>
+                </div>
+            </div>
+        </div>
+    @endif
 
     <!-- Ubah Password -->
     <div class="bg-gray-50 border border-gray-200 rounded-2xl p-6 shadow-inner">
@@ -66,33 +100,32 @@
             </div>
         @endif
 
-        <!-- Form Ganti Password -->
         <form method="POST" action="{{ route('profile.update-password') }}" class="space-y-5">
             @csrf
             <div>
                 <label class="block text-gray-600 font-medium mb-1">Password Lama</label>
                 <input type="password" name="current_password"
-                       class="w-full border border-gray-300 rounded-xl p-3 mt-1 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                       class="w-full border border-gray-300 rounded-xl p-3 mt-1 focus:ring-2 focus:ring-blue-500"
                        required placeholder="Masukkan password lama">
             </div>
 
             <div>
                 <label class="block text-gray-600 font-medium mb-1">Password Baru</label>
                 <input type="password" name="new_password"
-                       class="w-full border border-gray-300 rounded-xl p-3 mt-1 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                       class="w-full border border-gray-300 rounded-xl p-3 mt-1 focus:ring-2 focus:ring-blue-500"
                        required placeholder="Masukkan password baru">
             </div>
 
             <div>
                 <label class="block text-gray-600 font-medium mb-1">Konfirmasi Password Baru</label>
                 <input type="password" name="new_password_confirmation"
-                       class="w-full border border-gray-300 rounded-xl p-3 mt-1 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                       class="w-full border border-gray-300 rounded-xl p-3 mt-1 focus:ring-2 focus:ring-blue-500"
                        required placeholder="Ulangi password baru">
             </div>
 
             <div class="flex justify-end">
                 <button type="submit"
-                        class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2.5 rounded-xl shadow-md transition-all duration-300 hover:scale-[1.02]">
+                        class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2.5 rounded-xl shadow-md transition">
                     Simpan Perubahan
                 </button>
             </div>

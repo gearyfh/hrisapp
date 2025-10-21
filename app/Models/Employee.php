@@ -41,7 +41,7 @@ class Employee extends Model
         return $this->hasMany(Document::class, 'employee_id');
     }
 
-    public function overtimeRequests()
+    public function overtimeRequest()
 {
     return $this->hasMany(OvertimeRequest::class);
 }

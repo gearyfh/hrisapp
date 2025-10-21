@@ -24,6 +24,12 @@
                 <input type="text" value="{{ ucfirst(Auth::user()->role) }}" disabled
                        class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-not-allowed">
             </div>
+
+            <div>
+                <label class="block text-gray-600 font-medium mb-1">Perusahaan</label>
+                <input type="text" value="{{ ucfirst(Auth::user()->company->company_name) }}" disabled
+                       class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-not-allowed">
+            </div>
         </div>
 
         <div class="flex flex-col items-center justify-center">

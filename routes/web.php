@@ -123,9 +123,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::post('/approvals/{id}/approve', [ApprovalController::class, 'approve'])->name('admin.approvals.approve');
     Route::post('/approvals/{id}/reject', [ApprovalController::class, 'reject'])->name('admin.approvals.reject');
 
+    Route::get('/documents/select', [AdminDocumentController::class, 'selectEmployees'])->name('admin.documents.select');
     Route::get('/documents', [AdminDocumentController::class, 'index'])->name('admin.documents.index');
     Route::get('/documents/create', [AdminDocumentController::class, 'create'])->name('admin.documents.create');
     Route::post('/documents', [AdminDocumentController::class, 'store'])->name('admin.documents.store');
+
 
     Route::get('/employees', [EmployeeCreateController::class, 'index'])->name('admin.employee.index');
     Route::get('/employees/create', [EmployeeCreateController::class, 'create'])->name('admin.employee.create');

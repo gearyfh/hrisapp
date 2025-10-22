@@ -4,7 +4,7 @@
 <div class="max-w-6xl mx-auto bg-white shadow-xl rounded-2xl p-8 mt-4">
     <div class="flex justify-between items-center mb-8">
         <h2 class="text-2xl font-bold text-gray-800">Daftar Dokumen</h2>
-        <a href="{{ route('admin.documents.create') }}" class="inline-flex items-center border border-green-500 text-green-600 px-5 py-2.5 rounded-full text-sm font-medium hover:bg-green-600 hover:text-white transition-all duration-200 shadow-sm">
+        <a href="{{ route('admin.documents.select') }}" class="inline-flex items-center border border-green-500 text-green-600 px-5 py-2.5 rounded-full text-sm font-medium hover:bg-green-600 hover:text-white transition-all duration-200 shadow-sm">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
             </svg>

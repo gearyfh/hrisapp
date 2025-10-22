@@ -19,7 +19,27 @@
     <!-- Form -->
     <form action="{{ route('admin.documents.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
         @csrf
-
+        @if(!empty($selectedEmployeeIds))
+            <div class="bg-blue-50 border border-blue-200 text-blue-700 p-4 rounded-lg mb-6">
+                <h3 class="font-semibold mb-2">Karyawan Terpilih:</h3>
+                <ul class="list-disc list-inside">
+                    @foreach($employees as $emp)
+                        <li>{{ $emp->name }}</li>
+                        <input type="hidden" name="employee_id[]" value="{{ $emp->id }}">
+                    @endforeach
+                </ul>
+            </div>
+        @else
+            <div class="mb-4">
+                <label class="block text-gray-700 font-medium mb-1">Pilih Karyawan (opsional)</label>
+                <select name="employee_id[]" class="w-full border border-gray-300 rounded-xl px-4 py-2.5">
+                    <option value="">- Tidak Dihubungkan -</option>
+                    @foreach($employees as $employee)
+                        <option value="{{ $employee->id }}">{{ $employee->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+        @endif
         <!-- Nama Dokumen -->
         <div>
             <label class="block text-gray-700 font-medium mb-1">Nama Dokumen</label>
@@ -38,7 +58,7 @@
         </div>
 
         <!-- Pilih Karyawan -->
-        <div>
+        {{-- <div>
             <label class="block text-gray-700 font-medium mb-1">Pilih Karyawan (opsional)</label>
             <select name="employee_id"
                     class="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-400 focus:outline-none transition bg-white">
@@ -47,7 +67,7 @@
                     <option value="{{ $employee->id }}">{{ $employee->name }}</option>
                 @endforeach
             </select>
-        </div>
+        </div> --}}
 
         <!-- Upload File -->
         <div>

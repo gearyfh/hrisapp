@@ -75,42 +75,43 @@ class AbsensiController extends Controller
     }
 
     public function checkout()
-    {
-        $employee = Auth::user()->employee;
+{
+    $employee = Auth::user()->employee;
 
-        $attendance = Attendance::where('employee_id', $employee->id)
-            ->whereDate('tanggal_masuk', now()->toDateString())
-            ->whereNull('jam_keluar')
-            ->first();
+    $attendance = \App\Models\Attendance::where('employee_id', $employee->id)
+        ->whereNull('jam_keluar')
+        ->latest()
+        ->first();
 
-        if (!$attendance) {
-            return redirect()->back()->with('error', 'Anda belum check-in hari ini.');
-        }
-
-        // 🔹 Hitung total jam kerja dalam jam (bisa desimal)
-        $jamMasuk = Carbon::parse($attendance->jam_masuk);
-        $jamKeluar = Carbon::now();
-        $selisihMenit = $jamKeluar->diffInMinutes($jamMasuk);
-        $selisihJam = $selisihMenit / 60; // ubah ke jam desimal
-
-        // 🔹 Aturan kerja:
-        // ≥ 9 jam  → hitung 8 jam kerja efektif
-        // ≤ 8 jam → dikurangi 1 jam istirahat (tapi minimal 0)
-        if ($selisihJam >= 9) {
-            $workHours = 8;
-        } elseif ($selisihJam <= 8) {
-            $workHours = max($selisihJam - 1, 0);
-        } else {
-            $workHours = $selisihJam;
-        }
-
-        // 🔹 Update attendance
-        $attendance->update([
-            'tanggal_keluar' => now()->format('Y-m-d'),
-            'jam_keluar'     => now()->format('H:i:s'),
-            'work_hours'     => round($workHours, 2), // simpan dua angka di belakang koma
-        ]);
-
-        return redirect()->route('employees.attendance.absensi')->with('success', 'Check-out berhasil!');
+    if (!$attendance) {
+        return redirect()->back()->with('error', 'Tidak ada absensi aktif untuk di-checkout.');
     }
+
+    // 🔹 Gabungkan tanggal + jam untuk hitung durasi akurat antar hari
+    $jamMasuk = Carbon::parse($attendance->tanggal_masuk . ' ' . $attendance->jam_masuk);
+    $jamKeluar = Carbon::now();
+
+    // 🔹 Hitung total jam dalam bentuk desimal (boleh lintas hari)
+    $selisihMenit = $jamKeluar->diffInMinutes($jamMasuk);
+    $selisihJam = $selisihMenit / 60;
+
+    // 🔹 Terapkan aturan kerja (istirahat, dll)
+    if ($selisihJam >= 9) {
+        $workHours = 8;
+    } elseif ($selisihJam <= 8) {
+        $workHours = max($selisihJam - 1, 0);
+    } else {
+        $workHours = $selisihJam;
+    }
+
+    // 🔹 Update data ke database
+    $attendance->update([
+        'tanggal_keluar' => $jamKeluar->format('Y-m-d'),
+        'jam_keluar'     => $jamKeluar->format('H:i:s'),
+        'work_hours'     => round($workHours, 2),
+    ]);
+
+    return redirect()->route('employees.attendance.absensi')->with('success', 'Check-out berhasil!');
+}
+
 }

@@ -14,6 +14,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\EmployeeCreateController;
+use App\Http\Controllers\ActivityLogController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -189,6 +190,10 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/rekap', [ReportController::class, 'indexTotalAbsensi'])->name('admin.data.absensi.index');
+});
+
+Route::prefix('admin')->middleware(['auth'])->group(function () {
+     Route::get('/logs', [ActivityLogController::class, 'index'])->name('admin.logs.index');
 });
 
 

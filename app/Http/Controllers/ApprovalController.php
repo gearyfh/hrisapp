@@ -6,15 +6,13 @@ use App\Models\OvertimeRequest;
 use App\Models\AttendanceCorrection;
 use App\Models\LeaveRequest;
 use App\Helpers\NotificationHelper;
+use App\Helpers\ActivityLogger;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ApprovalController extends Controller
 {
-    /**
-     * Tampilkan semua pengajuan izin/cuti/sakit
-     */
     public function index()
     {
         $requests = LeaveRequest::with(['employee', 'leaveType'])
@@ -25,9 +23,6 @@ class ApprovalController extends Controller
         return view('admin.approvals.index', compact('requests'));
     }
 
-    /**
-     * Halaman pengajuan CUTI
-     */
     public function cuti()
     {
         $requests = LeaveRequest::with(['employee', 'leaveType'])
@@ -39,9 +34,6 @@ class ApprovalController extends Controller
         return view('admin.approvals.cuti.index', compact('requests'));
     }
 
-    /**
-     * Halaman pengajuan IZIN / SAKIT
-     */
     public function izinSakit()
     {
         $requests = LeaveRequest::with(['employee', 'leaveType'])
@@ -53,27 +45,18 @@ class ApprovalController extends Controller
         return view('admin.approvals.izin.index', compact('requests'));
     }
 
-    /**
-     * Detail pengajuan CUTI
-     */
     public function showCuti($id)
     {
         $leave = LeaveRequest::with(['employee', 'leaveType'])->findOrFail($id);
         return view('admin.approvals.cuti.show', compact('leave'));
     }
 
-    /**
-     * Detail pengajuan IZIN / SAKIT
-     */
     public function showIzinSakit($id)
     {
         $leave = LeaveRequest::with(['employee', 'leaveType'])->findOrFail($id);
         return view('admin.approvals.izin.show', compact('leave'));
     }
 
-    /**
-     * Update status (approved / rejected)
-     */
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -94,6 +77,9 @@ class ApprovalController extends Controller
         $message = "Pengajuan {$leave->leaveType->name} kamu dari {$leave->start_date} hingga {$leave->end_date} telah {$request->status}.";
         NotificationHelper::send($employeeId, $title, $message);
 
+        // 🔹 LOG ACTIVITY
+        ActivityLogger::log('update', "Admin memperbarui status pengajuan {$leave->leaveType->type} milik {$leave->employee->name} menjadi {$request->status}");
+
         if ($leave->leaveType->type === 'cuti') {
             return redirect()->route('admin.approvals.cuti')
                 ->with('success', '✅ Status pengajuan cuti berhasil diperbarui.');
@@ -103,9 +89,6 @@ class ApprovalController extends Controller
             ->with('success', '✅ Status pengajuan izin/sakit berhasil diperbarui.');
     }
 
-    /**
-     * Approve langsung
-     */
     public function approve(Request $request, $id)
     {
         $request->validate(['comment' => 'nullable|string|max:500']);
@@ -119,16 +102,16 @@ class ApprovalController extends Controller
         ]);
 
         $employeeId = $leave->employee_id;
-        $title = $request->status === 'approved' ? 'Pengajuan Diterima ✅' : 'Pengajuan Ditolak ❌';
-        $message = "Pengajuan {$leave->leaveType->name} kamu dari {$leave->start_date} hingga {$leave->end_date} telah {$request->status}.";
+        $title = 'Pengajuan Diterima ✅';
+        $message = "Pengajuan {$leave->leaveType->name} kamu dari {$leave->start_date} hingga {$leave->end_date} telah disetujui.";
         NotificationHelper::send($employeeId, $title, $message);
+
+        // 🔹 LOG ACTIVITY
+        ActivityLogger::log('approve', "Admin menyetujui pengajuan {$leave->leaveType->type} milik {$leave->employee->name}");
 
         return back()->with('success', '✅ Pengajuan telah disetujui.');
     }
 
-    /**
-     * Reject langsung
-     */
     public function reject(Request $request, $id)
     {
         $request->validate(['comment' => 'nullable|string|max:500']);
@@ -142,16 +125,16 @@ class ApprovalController extends Controller
         ]);
 
         $employeeId = $leave->employee_id;
-        $title = $request->status === 'approved' ? 'Pengajuan Diterima ✅' : 'Pengajuan Ditolak ❌';
-        $message = "Pengajuan {$leave->leaveType->name} kamu dari {$leave->start_date} hingga {$leave->end_date} telah {$request->status}.";
+        $title = 'Pengajuan Ditolak ❌';
+        $message = "Pengajuan {$leave->leaveType->name} kamu dari {$leave->start_date} hingga {$leave->end_date} telah ditolak.";
         NotificationHelper::send($employeeId, $title, $message);
+
+        // 🔹 LOG ACTIVITY
+        ActivityLogger::log('reject', "Admin menolak pengajuan {$leave->leaveType->type} milik {$leave->employee->name}");
 
         return back()->with('error', '❌ Pengajuan telah ditolak.');
     }
 
-    /**
-     * Daftar koreksi absensi
-     */
     public function correctionIndex()
     {
         $corrections = AttendanceCorrection::with('employee')
@@ -162,18 +145,12 @@ class ApprovalController extends Controller
         return view('admin.approvals.corrections.index', compact('corrections'));
     }
 
-    /**
-     * Detail koreksi absensi
-     */
     public function correctionShow($id)
     {
         $correction = AttendanceCorrection::with('employee')->findOrFail($id);
         return view('admin.approvals.corrections.show', compact('correction'));
     }
 
-    /**
-     * Update status koreksi absensi (approve/reject)
-     */
     public function correctionUpdate(Request $request, $id)
     {
         $request->validate([
@@ -190,7 +167,6 @@ class ApprovalController extends Controller
             'approved_at' => now(),
         ]);
 
-        // Jika koreksi disetujui, update data absensi
         if ($request->status === 'approved' && $correction->attendance) {
             $attendance = $correction->attendance;
             $attendance->update([
@@ -207,14 +183,13 @@ class ApprovalController extends Controller
         $message = "Pengajuan koreksi absensi kamu untuk tanggal {$correction->old_date} telah {$request->status}.";
         NotificationHelper::send($employeeId, $title, $message);
 
+        // 🔹 LOG ACTIVITY
+        ActivityLogger::log('correction_update', "Admin memperbarui status koreksi absensi milik {$correction->employee->name} menjadi {$request->status}");
 
         return redirect()->route('admin.corrections.index')
             ->with('success', '✅ Status koreksi absensi berhasil diperbarui.');
     }
 
-    /**
-     * Daftar pengajuan lembur
-     */
     public function overtimeIndex()
     {
         $overtimes = OvertimeRequest::with('employee')
@@ -225,18 +200,12 @@ class ApprovalController extends Controller
         return view('admin.approvals.overtimes.index', compact('overtimes'));
     }
 
-    /**
-     * Detail lembur
-     */
     public function overtimeShow($id)
     {
         $overtime = OvertimeRequest::with('employee', 'attendance')->findOrFail($id);
         return view('admin.approvals.overtimes.show', compact('overtime'));
     }
 
-    /**
-     * Update status lembur (approve/reject)
-     */
     public function overtimeUpdate(Request $request, $id)
     {
         $request->validate([
@@ -256,6 +225,9 @@ class ApprovalController extends Controller
         $title = $request->status === 'approved' ? 'Lembur Disetujui ✅' : 'Lembur Ditolak ❌';
         $message = "Pengajuan lembur kamu pada {$overtime->date} telah {$request->status}.";
         NotificationHelper::send($employeeId, $title, $message);
+
+        // 🔹 LOG ACTIVITY
+        ActivityLogger::log('overtime_update', "Admin memperbarui status lembur milik {$overtime->employee->name} menjadi {$request->status}");
 
         return redirect()->route('admin.overtimes.index')
             ->with('success', '✅ Status pengajuan lembur berhasil diperbarui.');

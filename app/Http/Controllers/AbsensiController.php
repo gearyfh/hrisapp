@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Helpers\ActivityLogger;
 use App\Models\Attendance;
 use Carbon\Carbon;
 
@@ -71,6 +72,8 @@ class AbsensiController extends Controller
             'lokasi'        => $validated['lokasi'],
         ]);
 
+        ActivityLogger::log('checkin', 'Attendance', $attendance->id ?? null, 'User melakukan check-in');
+
         return redirect()->route('employees.attendance.absensi')->with('success', 'Check-in berhasil!');
     }
 
@@ -87,31 +90,34 @@ class AbsensiController extends Controller
         return redirect()->back()->with('error', 'Tidak ada absensi aktif untuk di-checkout.');
     }
 
-    // 🔹 Gabungkan tanggal + jam untuk hitung durasi akurat antar hari
-    $jamMasuk = Carbon::parse($attendance->tanggal_masuk . ' ' . $attendance->jam_masuk);
-    $jamKeluar = Carbon::now();
+    // 🔹 Gabungkan tanggal dan jam agar bisa hitung lintas hari
+    $jamMasuk = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', "{$attendance->tanggal_masuk} {$attendance->jam_masuk}");
+    $jamKeluar = \Carbon\Carbon::now();
 
-    // 🔹 Hitung total jam dalam bentuk desimal (boleh lintas hari)
+    // 🔹 Hitung selisih jam (boleh lintas hari)
     $selisihMenit = $jamKeluar->diffInMinutes($jamMasuk);
     $selisihJam = $selisihMenit / 60;
 
-    // 🔹 Terapkan aturan kerja (istirahat, dll)
+    // 🔹 Terapkan aturan kerja sesuai permintaan kamu
     if ($selisihJam >= 9) {
-        $workHours = 8;
-    } elseif ($selisihJam <= 8) {
-        $workHours = max($selisihJam - 1, 0);
+        $workHours = 8; // kerja penuh
+    } elseif ($selisihJam < 8) {
+        $workHours = max($selisihJam - 1, 0); // potong 1 jam istirahat
     } else {
-        $workHours = $selisihJam;
+        $workHours = $selisihJam; // kalau pas di antara 8–9 jam, pakai jam sebenarnya
     }
 
-    // 🔹 Update data ke database
+    // 🔹 Update data absensi
     $attendance->update([
         'tanggal_keluar' => $jamKeluar->format('Y-m-d'),
         'jam_keluar'     => $jamKeluar->format('H:i:s'),
         'work_hours'     => round($workHours, 2),
     ]);
 
+    ActivityLogger::log('checkout', 'Attendance', $attendance->id, 'User melakukan check-out');
+
     return redirect()->route('employees.attendance.absensi')->with('success', 'Check-out berhasil!');
 }
+
 
 }

@@ -8,6 +8,7 @@ use App\Models\Employee;
 use App\Models\LeaveRequest;
 use App\Models\User;
 use Illuminate\Http\Request;   
+use App\Helpers\ActivityLogger;
 
 use Illuminate\Support\Facades\Auth;
 

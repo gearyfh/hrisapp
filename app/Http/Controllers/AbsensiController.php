@@ -81,7 +81,7 @@ class AbsensiController extends Controller
 {
     $employee = Auth::user()->employee;
 
-    $attendance = \App\Models\Attendance::where('employee_id', $employee->id)
+    $attendance = Attendance::where('employee_id', $employee->id)
         ->whereNull('jam_keluar')
         ->latest()
         ->first();
@@ -91,8 +91,8 @@ class AbsensiController extends Controller
     }
 
     // 🔹 Gabungkan tanggal dan jam agar bisa hitung lintas hari
-    $jamMasuk = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', "{$attendance->tanggal_masuk} {$attendance->jam_masuk}");
-    $jamKeluar = \Carbon\Carbon::now();
+    $jamMasuk = Carbon::createFromFormat('Y-m-d H:i:s', "{$attendance->tanggal_masuk} {$attendance->jam_masuk}");
+    $jamKeluar = Carbon::now();
 
     // 🔹 Hitung selisih jam (boleh lintas hari)
     $selisihMenit = $jamKeluar->diffInMinutes($jamMasuk);

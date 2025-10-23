@@ -17,6 +17,8 @@ class Attendance extends Model
         'jam_masuk',
         'jam_keluar',
         'lokasi',
+        'work_hours',
+        'is_corrected',
     ];
 
         public function employee()

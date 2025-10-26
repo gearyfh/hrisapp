@@ -51,7 +51,29 @@
             @elseif(auth()->user()->role === 'admin')
                 <a href="{{ route('admin.employee.index') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Karyawan</a>
                 <a href="{{ route('admin.documents.index') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Dokumen</a>
-                <a href="{{ route('admin.approvals.cuti') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Cuti Karyawan</a>
+
+                <div x-data="{ open: false }" class="mb-2">
+    <!-- Tombol utama -->
+    <button @click="open = !open"
+        class="flex justify-between items-center w-full text-left py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg focus:outline-none">
+        <span>Approval</span>
+        <svg xmlns="http://www.w3.org/2000/svg"
+            :class="{ 'rotate-180': open }"
+            class="w-5 h-5 transform transition-transform duration-200"
+            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19 9l-7 7-7-7" />
+        </svg>
+    </button>
+
+    <!-- Submenu -->
+    <div
+        x-show="open"
+        x-transition
+        class="pl-6 mt-1 space-y-1"
+        @click.away="open = false"
+    >
+        <a href="{{ route('admin.approvals.cuti') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Cuti Karyawan</a>
                 <a href="{{ route('admin.approvals.izin_sakit') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Izin / Sakit Karyawan</a>
                 <a href="{{ route('admin.corrections.index') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Koreksi Absensi Karyawan</a>
 
@@ -60,10 +82,14 @@
                             Jam Lembur Karyawan
                             </a>
 
+        </a>
+    </div>
+</div>
+
                             <a href="{{ route('admin.data.absensi.index') }}" 
                             class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">
-                            Jam Karyawan
-                            </a>
+                            Rekap Data Jam Karyawan
+                            </a> 
 
                             
                             <a href="{{ route('admin.logs.index') }}" 

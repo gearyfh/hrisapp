@@ -54,15 +54,9 @@ class WorkSummaryController extends Controller
         $bulan = Carbon::parse($month)->month;
 
         $employees = Employee::with('attendances', 'overtimeRequests')
-    ->whereHas('attendances')
-    ->orWhereHas('overtimeRequests')
-    ->get();
-
-
-        
-
-
-
+                    ->whereHas('attendances')
+                    ->orWhereHas('overtimeRequests')
+                    ->get();
 
         foreach ($employees as $employee) {
 
@@ -71,41 +65,46 @@ class WorkSummaryController extends Controller
                 ->whereYear('tanggal_masuk', $year)
                 ->get();
 
-                dd($attendances->pluck(['id', 'tanggal_masuk', 'jam_masuk', 'jam_keluar', 'work_hours']));
+                //dd($attendances->pluck(['id', 'tanggal_masuk', 'jam_masuk', 'jam_keluar', 'work_hours']));
 
-                // dd($attendances);
+            // foreach ($attendances as $att) {
+            //     dd($att->work_hours);
+            // }     
 
-            // $hari_kerja = $attendances->count();
+            $hari_kerja = $attendances->count();
+            //dd($attendances, $hari_kerja);
 
-            // // ✅ Hitung ulang work_hours jika masih 0
-            // $jam_kerja = $attendances->map(function ($att) {
-            //     if ($att->jam_masuk && $att->jam_keluar) {
-            //         $start = Carbon::parse($att->jam_masuk);
-            //         $end = Carbon::parse($att->jam_keluar);
-            //         $diff = $start->diffInMinutes($end) / 60;
-            //         return round($diff, 2);
-            //     }
-            //     return $att->work_hours ?? 0;
-            // })->sum();
+            // ✅ Hitung ulang work_hours jika masih 0
+            $jam_kerja = $attendances->map(function ($att) {
+                if ($att->jam_masuk && $att->jam_keluar) {
+                    $start = Carbon::parse($att->jam_masuk);
+                    $end = Carbon::parse($att->jam_keluar);
+                    $diff = $start->diffInMinutes($end) / 60;
+                    return round($diff, 2);
+                }
+                return $att->work_hours ?? 0;
+            })->sum();
 
-            // $jam_lembur = $employee->overtimeRequests()
-            //     ->where('status', 'approved')
-            //     ->whereMonth('date', $bulan)
-            //     ->whereYear('date', $year)
-            //     ->sum('duration');
+            $jam_lembur = $employee->overtimeRequests()
+                ->where('status', 'approved')
+                ->whereMonth('date', $bulan)
+                ->whereYear('date', $year)
+                ->sum('duration');
+            //dd($jam_kerja,$jam_lembur);
 
-            // WorkSummary::updateOrCreate(
-            //     [
-            //         'employee_id' => $employee->id,
-            //         'month' => $bulan,
-            //         'year' => $year,
-            //     ],
-            //     [
-            //         'total_days_worked' => $hari_kerja,
-            //         'total_work_hours' => $jam_kerja,
-            //         'total_overtime_hours' => $jam_lembur,
-            //     ]
-            // );
+            WorkSummary::updateOrCreate(
+                [
+                    'employee_id' => $employee->id,
+                    'month' => $bulan,
+                    'year' => $year,
+                ],
+                [
+                    'work_days' => $hari_kerja,
+                    'work_hours' => $jam_kerja,
+                    'overtime_hours' => $jam_lembur,
+                    'total_hours' => $jam_kerja + $jam_lembur
+                ]
+            );
         }
 
         return back()->with('success', 'Work Summary berhasil diperbarui!');

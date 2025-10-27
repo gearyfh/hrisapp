@@ -56,11 +56,11 @@
             @forelse ($rekap as $data)
                 <tr class="border-b hover:bg-gray-50">
                     <td class="p-2">{{ $data->employee->name }}</td>
-                    <td class="p-2 text-center">{{ $data->total_days_worked }}</td>
-                    <td class="p-2 text-center">{{ number_format($data->total_work_hours, 1) }}</td>
-                    <td class="p-2 text-center">{{ number_format($data->total_overtime_hours, 1) }}</td>
+                    <td class="p-2 text-center">{{ $data->work_days }}</td>
+                    <td class="p-2 text-center">{{ number_format($data->work_hours, 1) }}</td>
+                    <td class="p-2 text-center">{{ number_format($data->overtime_hours, 1) }}</td>
                     <td class="p-2 text-center font-semibold">
-                        {{ number_format($data->total_work_hours + $data->total_overtime_hours, 1) }}
+                        {{ number_format($data->total_hours, 1) }}
                     </td>
                 </tr>
             @empty

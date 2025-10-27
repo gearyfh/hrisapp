@@ -32,19 +32,21 @@ class Employee extends Model
     }
 
     public function attendances()
-    {
-        return $this->hasMany(Attendance::class);
-    }
+{
+    return $this->hasMany(Attendance::class, 'employee_id', 'id');
+}
+
+public function overtimeRequests()
+{
+    return $this->hasMany(OvertimeRequest::class, 'employee_id', 'id');
+}
+
 
     public function documents()
     {
         return $this->hasMany(Document::class, 'employee_id');
     }
 
-    public function overtimeRequests()
-    {
-        return $this->hasMany(OvertimeRequest::class);
-    }
 
     public function leaveRequests()
     {
@@ -60,27 +62,33 @@ class Employee extends Model
      * 🔹 Hitung total jam kerja berdasarkan work_hours di tabel attendance
      */
     public function getTotalWorkingHours($month = null, $year = null)
-    {
-        $month = $month ?? now()->month;
-        $year = $year ?? now()->year;
+{
+    $month = $month ?? now()->month;
+    $year = $year ?? now()->year;
 
-        // ✅ Jumlah total work_hours dari attendance
-        $attendanceHours = $this->attendances()
-            ->whereYear('tanggal_masuk', $year)
-            ->whereMonth('tanggal_masuk', $month)
-            ->sum('work_hours');
+    $attendanceHours = $this->attendances()
+        ->whereYear('tanggal_masuk', $year)
+        ->whereMonth('tanggal_masuk', $month)
+        ->get()
+        ->sum(function ($item) {
+            if ($item->work_hours == 0 && $item->jam_masuk && $item->jam_keluar) {
+                $in = strtotime($item->jam_masuk);
+                $out = strtotime($item->jam_keluar);
+                return max(($out - $in) / 3600, 0);
+            }
+            return $item->work_hours;
+        });
 
-        // ✅ Hitung total lembur yang disetujui
-        $overtimeHours = $this->overtimeRequests()
-            ->where('status', 'approved')
-            ->whereYear('date', $year)
-            ->whereMonth('date', $month)
-            ->sum('duration');
+    $overtimeHours = $this->overtimeRequests()
+        ->where('status', 'approved')
+        ->whereYear('date', $year)
+        ->whereMonth('date', $month)
+        ->sum('duration');
 
-        return [
-            'attendance_hours' => $attendanceHours ?? 0,
-            'overtime_hours' => $overtimeHours ?? 0,
-            'total_hours' => ($attendanceHours ?? 0) + ($overtimeHours ?? 0),
-        ];
-    }
+    return [
+        'attendance_hours' => $attendanceHours,
+        'overtime_hours' => $overtimeHours,
+        'total_hours' => $attendanceHours + $overtimeHours,
+    ];
+}
 }

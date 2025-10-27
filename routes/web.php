@@ -15,6 +15,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\EmployeeCreateController;
 use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\WorkSummaryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -188,12 +189,34 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
     Route::post('/approvals/overtimes/{id}', [ApprovalController::class, 'overtimeUpdate'])->name('admin.overtimes.update');
 });
 
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
-    Route::get('/rekap', [ReportController::class, 'indexTotalAbsensi'])->name('admin.data.absensi.index');
-});
+// Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
+//     Route::get('/rekap', [ReportController::class, 'indexTotalAbsensi'])->name('admin.data.absensi.index');
+// });
 
 Route::prefix('admin')->middleware(['auth'])->group(function () {
      Route::get('/logs', [ActivityLogController::class, 'index'])->name('admin.logs.index');
+});
+
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
+
+    // Halaman Rekap Jam Kerja Karyawan
+    Route::get('/work-summary', [WorkSummaryController::class, 'index'])
+        ->name('admin.data.absensi.index');
+
+    // Update Realtime Work Summary
+    Route::post('/work-summary/update', [WorkSummaryController::class, 'updateSummary'])
+        ->name('admin.work-summary.update');
+
+});
+
+Route::get('/fix-work-hours', function () {
+    $attendances = \App\Models\Attendance::all();
+
+    foreach ($attendances as $attendance) {
+        $attendance->save(); // trigger booted hitung jam kerja
+    }
+
+    return 'Selesai update jam kerja!';
 });
 
 

@@ -38,81 +38,81 @@ class AdminController extends Controller
     }
 
 
-public function indexTotalAbsensi(Request $request)
-{
-    // ambil parameter
-    $month = $request->input('month') ?? now()->format('Y-m');
-    $search = $request->input('search');
-    $sort = $request->input('sort');
+// public function indexTotalAbsensi(Request $request)
+// {
+//     // ambil parameter
+//     $month = $request->input('month') ?? now()->format('Y-m');
+//     $search = $request->input('search');
+//     $sort = $request->input('sort');
 
-    // boundary tanggal bulan
-    $start = Carbon::createFromFormat('Y-m', $month)->startOfMonth()->toDateString();
-    $end   = Carbon::createFromFormat('Y-m', $month)->endOfMonth()->toDateString();
+//     // boundary tanggal bulan
+//     $start = Carbon::createFromFormat('Y-m', $month)->startOfMonth()->toDateString();
+//     $end   = Carbon::createFromFormat('Y-m', $month)->endOfMonth()->toDateString();
 
-    // ambil employees with relations (lazy load attendances/overtimes per employee)
-    $employees = \App\Models\Employee::all();
+//     // ambil employees with relations (lazy load attendances/overtimes per employee)
+//     $employees = \App\Models\Employee::all();
 
-    $rekap = collect();
+//     $rekap = collect();
 
-    foreach ($employees as $employee) {
-        // ambil attendances dari DB untuk bulan tersebut (query langsung)
-        $attendances = $employee->attendances()
-            ->whereBetween('tanggal_masuk', [$start, $end])
-            ->get();
+//     foreach ($employees as $employee) {
+//         // ambil attendances dari DB untuk bulan tersebut (query langsung)
+//         $attendances = $employee->attendances()
+//             ->whereBetween('tanggal_masuk', [$start, $end])
+//             ->get();
 
-        // jumlah hari kerja (jumlah record attendances)
-        $hariKerja = $attendances->count();
+//         // jumlah hari kerja (jumlah record attendances)
+//         $hariKerja = $attendances->count();
 
-        // jam kerja dihitung dari kolom work_hours (yang sudah diisi saat checkout)
-        $jamKerja = (float) $attendances->sum(function ($a) {
-            return (float) ($a->work_hours ?? 0);
-        });
+//         // jam kerja dihitung dari kolom work_hours (yang sudah diisi saat checkout)
+//         $jamKerja = (float) $attendances->sum(function ($a) {
+//             return (float) ($a->work_hours ?? 0);
+//         });
 
-        // total lembur (approved) untuk bulan tersebut, query langsung
-        $jamLembur = $employee->overtimeRequests()
-            ->where('status', 'approved')
-            ->whereBetween('date', [$start, $end])
-            ->sum('duration');
+//         // total lembur (approved) untuk bulan tersebut, query langsung
+//         $jamLembur = $employee->overtimeRequests()
+//             ->where('status', 'approved')
+//             ->whereBetween('date', [$start, $end])
+//             ->sum('duration');
 
-        $totalJam = $jamKerja + (float) $jamLembur;
+//         $totalJam = $jamKerja + (float) $jamLembur;
 
-        $rekap->push([
-            'employee_id'     => $employee->id,
-            'nama'            => $employee->name ?? $employee->nama ?? '-',
-            'hari_kerja'      => $hariKerja,
-            'jam_kerja'       => round($jamKerja, 2),
-            'jam_lembur'      => round($jamLembur, 2),
-            'total_jam'       => round($totalJam, 2),
-        ]);
-    }
+//         $rekap->push([
+//             'employee_id'     => $employee->id,
+//             'nama'            => $employee->name ?? $employee->nama ?? '-',
+//             'hari_kerja'      => $hariKerja,
+//             'jam_kerja'       => round($jamKerja, 2),
+//             'jam_lembur'      => round($jamLembur, 2),
+//             'total_jam'       => round($totalJam, 2),
+//         ]);
+//     }
 
-    // -------- apply search ----------
-    if ($search) {
-        $rekap = $rekap->filter(function ($item) use ($search) {
-            return stripos($item['nama'], $search) !== false;
-        })->values(); // reset keys
-    }
+//     // -------- apply search ----------
+//     if ($search) {
+//         $rekap = $rekap->filter(function ($item) use ($search) {
+//             return stripos($item['nama'], $search) !== false;
+//         })->values(); // reset keys
+//     }
 
-    // -------- apply sort ----------
-    if ($sort === 'name_asc') {
-        $rekap = $rekap->sortBy('nama')->values();
-    } elseif ($sort === 'name_desc') {
-        $rekap = $rekap->sortByDesc('nama')->values();
-    } elseif ($sort === 'hours_desc') {
-        $rekap = $rekap->sortByDesc('total_jam')->values();
-    } elseif ($sort === 'hours_asc') {
-        $rekap = $rekap->sortBy('total_jam')->values();
-    }
+//     // -------- apply sort ----------
+//     if ($sort === 'name_asc') {
+//         $rekap = $rekap->sortBy('nama')->values();
+//     } elseif ($sort === 'name_desc') {
+//         $rekap = $rekap->sortByDesc('nama')->values();
+//     } elseif ($sort === 'hours_desc') {
+//         $rekap = $rekap->sortByDesc('total_jam')->values();
+//     } elseif ($sort === 'hours_asc') {
+//         $rekap = $rekap->sortBy('total_jam')->values();
+//     }
 
-    // kirim ke view
-    return view('admin.data.absensi.index', [
-        'rekap' => $rekap,
-        'month' => $month,
-        'search' => $search,
-        'sort' => $sort,
-    ]);
-}
+//     // kirim ke view
+//     return view('admin.data.absensi.index', [
+//         'rekap' => $rekap,
+//         'month' => $month,
+//         'search' => $search,
+//         'sort' => $sort,
+//     ]);
+// }
 
 
 
-}
+// }

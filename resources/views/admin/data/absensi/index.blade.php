@@ -2,13 +2,24 @@
 
 @section('content')
 <div class="max-w-6xl mx-auto bg-white shadow-md rounded-xl p-6 border border-gray-100">
-    <h2 class="text-lg font-semibold mb-4">Rekap Total Jam Kerja Karyawan</h2>
+    <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold">Rekap Total Jam Kerja Karyawan</h2>
 
-    {{-- Filter Bulan, Search & Sort --}}
+        {{-- ✅ Tombol update realtime --}}
+        <form action="{{ route('admin.work-summary.update') }}" method="POST">
+            @csrf
+            <input type="hidden" name="month" value="{{ request('month', now()->format('Y-m')) }}">
+            <button type="submit" class="bg-green-600 text-white px-3 py-1 rounded-md hover:bg-green-700 text-sm">
+                Update Sekarang ⟳
+            </button>
+        </form>
+    </div>
+
+    {{-- Filter Bulan --}}
     <form method="GET" action="{{ route('admin.data.absensi.index') }}" class="flex items-center gap-2 mb-4">
 
-        {{-- Filter bulan --}}
-        <input type="month" name="month" value="{{ $month ?? now()->format('Y-m') }}"
+        {{-- Input bulan --}}
+        <input type="month" name="month" value="{{ request('month', now()->format('Y-m')) }}"
                class="border rounded-md px-3 py-1">
 
         {{-- Search nama --}}
@@ -44,11 +55,13 @@
         <tbody>
             @forelse ($rekap as $data)
                 <tr class="border-b hover:bg-gray-50">
-                    <td class="p-2">{{ $data['nama'] }}</td>
-                    <td class="p-2 text-center">{{ number_format($data['hari_kerja'] ?? 0, 0) }}</td>
-                    <td class="p-2 text-center">{{ number_format($data['jam_kerja'] ?? 0, 1) }}</td>
-                    <td class="p-2 text-center">{{ number_format($data['jam_lembur'] ?? 0, 1) }}</td>
-                    <td class="p-2 text-center font-semibold">{{ number_format($data['total_jam'] ?? 0, 1) }}</td>
+                    <td class="p-2">{{ $data->employee->name }}</td>
+                    <td class="p-2 text-center">{{ $data->total_days_worked }}</td>
+                    <td class="p-2 text-center">{{ number_format($data->total_work_hours, 1) }}</td>
+                    <td class="p-2 text-center">{{ number_format($data->total_overtime_hours, 1) }}</td>
+                    <td class="p-2 text-center font-semibold">
+                        {{ number_format($data->total_work_hours + $data->total_overtime_hours, 1) }}
+                    </td>
                 </tr>
             @empty
                 <tr>
@@ -61,4 +74,10 @@
     </table>
 
 </div>
+
+@if(session('success'))
+    <script>
+        alert("{{ session('success') }}");
+    </script>
+@endif
 @endsection

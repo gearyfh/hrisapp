@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
         CompanySeeder::class,
         UserSeeder::class,
         LeaveTypeSeeder::class,
+        HugeDummySeeder::class,
         
     ]);
     }

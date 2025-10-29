@@ -61,6 +61,14 @@
 
    {{-- 🔍 Filter --}}
     <div class="bg-gray-50 border border-gray-200 p-4 rounded-xl mb-5">
+        <h2 class="text-lg font-semibold text-gray-700 mb-3 flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-500" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd"
+                d="M3 4a1 1 0 011-1h12a1 1 0 01.894 1.447l-4.382 8.764A1 1 0 0111 13v3a1 1 0 01-1.447.894l-2-1A1 1 0 017 15v-2.236L2.106 4.447A1 1 0 013 4z"
+                clip-rule="evenodd" />
+        </svg>
+        Filter
+    </h2>
         <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
 
             <input type="text" id="filterNama" placeholder="Cari Karyawan"

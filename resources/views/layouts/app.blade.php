@@ -73,7 +73,7 @@
         class="pl-6 mt-1 space-y-1"
         @click.away="open = false"
     >
-        <a href="{{ route('admin.approvals.cuti') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Cuti Karyawan</a>
+        <a href="{{ route('admin.approvals.cuti.index') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Cuti Karyawan</a>
                 <a href="{{ route('admin.approvals.izin_sakit') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Izin / Sakit Karyawan</a>
                 <a href="{{ route('admin.corrections.index') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Koreksi Absensi Karyawan</a>
 

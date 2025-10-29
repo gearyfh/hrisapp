@@ -6,6 +6,53 @@
         <h1 class="text-2xl font-semibold text-gray-800">Daftar Pengajuan Cuti</h1>
     </div>
 
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+
+    {{-- ✅ Approved --}}
+    <a href="{{ route('admin.approvals.cuti.index', ['status' => 'approved']) }}"
+       class="group bg-gradient-to-r from-green-500 to-emerald-500 
+              rounded-2xl text-white shadow-lg p-6 flex justify-between items-center
+              transition transform hover:-translate-y-1 hover:shadow-xl">
+        
+        <div>
+            <p class="text-sm opacity-90">Total Approved</p>
+            <p class="text-3xl font-bold mt-2">{{ $counts['approved'] ?? 0}}</p>
+        </div>
+
+        <div class="w-6 h-6 rounded-full bg-white/20 group-hover:bg-white/30 transition"></div>
+    </a>
+
+    {{-- ⏳ Pending --}}
+    <a href="{{ route('admin.approvals.cuti.index', ['status' => 'pending']) }}"
+       class="group bg-gradient-to-r from-yellow-400 to-orange-400
+              rounded-2xl text-white shadow-lg p-6 flex justify-between items-center
+              transition transform hover:-translate-y-1 hover:shadow-xl">
+        
+        <div>
+            <p class="text-sm opacity-90">Menunggu Persetujuan</p>
+            <p class="text-3xl font-bold mt-2">{{ $counts['pending'] ?? 0 }}</p>
+        </div>
+
+        <div class="w-6 h-6 rounded-full bg-white/20 group-hover:bg-white/30 transition"></div>
+    </a>
+
+    {{-- ❌ Rejected --}}
+    <a href="{{ route('admin.approvals.cuti.index', ['status' => 'rejected']) }}"
+       class="group bg-gradient-to-r from-red-500 to-rose-500
+              rounded-2xl text-white shadow-lg p-6 flex justify-between items-center
+              transition transform hover:-translate-y-1 hover:shadow-xl">
+        
+        <div>
+            <p class="text-sm opacity-90">Pengajuan Ditolak</p>
+            <p class="text-3xl font-bold mt-2">{{ $counts['rejected'] ?? 0 }}</p>
+        </div>
+
+        <div class="w-6 h-6 rounded-full bg-white/20 group-hover:bg-white/30 transition"></div>
+    </a>
+
+</div>
+
+
     @if(session('success'))
         <div class="bg-green-100 border border-green-400 text-green-700 p-3 rounded mb-4">
             {{ session('success') }}

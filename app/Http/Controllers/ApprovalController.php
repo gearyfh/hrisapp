@@ -23,15 +23,26 @@ class ApprovalController extends Controller
         return view('admin.approvals.index', compact('requests'));
     }
 
-    public function cuti()
+    public function cuti(Request $request)
     {
+
+            $status = $request->status;
+
+
         $requests = LeaveRequest::with(['employee', 'leaveType'])
             ->whereHas('leaveType', fn($q) => $q->where('type', 'cuti'))
-            ->orderBy('status', 'asc')
+            ->when($status, fn($q) => $q->where('status', $status))
+            // ->orderBy()
             ->latest()
             ->get();
 
-        return view('admin.approvals.cuti.index', compact('requests'));
+            $counts = [
+    'pending' => LeaveRequest::where('status', 'pending')->count(),
+    'approved' => LeaveRequest::where('status', 'approved')->count(),
+    'rejected' => LeaveRequest::where('status', 'rejected')->count(),
+];
+
+        return view('admin.approvals.cuti.index', compact('requests', 'counts'));
     }
 
     public function izinSakit()

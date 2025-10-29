@@ -113,7 +113,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/approvals', [ApprovalController::class, 'index'])->name('admin.approvals.index');
 
     // Halaman khusus pengajuan CUTI
-    Route::get('/approvals/cuti', [ApprovalController::class, 'cuti'])->name('admin.approvals.cuti');
+    Route::get('/approvals/cuti', [ApprovalController::class, 'cuti'])->name('admin.approvals.cuti.index');
     Route::get('/approvals/cuti/{id}', [ApprovalController::class, 'showCuti'])->name('admin.approvals.cuti.show');
 
     // Halaman khusus pengajuan IZIN / SAKIT

@@ -7,51 +7,57 @@
     </div>
 
     <!-- 🔍 Filter Manual -->
-    <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
-        <input type="text" id="filterKaryawan" class="border border-gray-300 rounded-lg px-3 py-2 text-sm" placeholder="Cari Karyawan">
-        <input type="text" id="filterTanggal" class="border border-gray-300 rounded-lg px-3 py-2 text-sm" placeholder="Cari Tanggal">
-        <input type="text" id="filterDurasi" class="border border-gray-300 rounded-lg px-3 py-2 text-sm" placeholder="Cari Durasi">
-        <input type="text" id="filterAlasan" class="border border-gray-300 rounded-lg px-3 py-2 text-sm" placeholder="Cari Alasan">
-        <select id="filterStatus" class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
-            <option value="">Semua Status</option>
-            <option value="approved">Approved</option>
-            <option value="pending">Pending</option>
-            <option value="rejected">Rejected</option>
-        </select>
-        <button id="resetFilter"
-            class="bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm px-3 py-2 rounded-lg font-medium transition">
-            Reset
-        </button>
+    <div class="bg-gray-50 border border-gray-200 p-4 rounded-xl mb-5">
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+            <input type="text" id="filterKaryawan" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400" placeholder="Cari Karyawan">
+            <input type="text" id="dateRange" placeholder="Rentang Tanggal"
+                    class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400" />
+            <select id="filterStatus" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400">
+                <option value="">Semua Status</option>
+                <option value="approved">Approved</option>
+                <option value="pending">Pending</option>
+                <option value="rejected">Rejected</option>
+            </select>
+            <button id="resetFilter"
+                class="bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm px-3 py-2 rounded-lg font-medium transition">
+                Reset
+            </button>
+        </div>
     </div>
 
-    <div class="overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
-        <table id="overtimeTable" class="w-full text-sm border">
-            <thead class="bg-gray-100">
+    <div class="overflow-x-auto border border-gray-200 rounded-xl shadow-sm">
+        <table id="overtimeTable" class="stripe hover w-full text-sm">
+            <thead class="bg-gray-50 text-gray-700">
                 <tr>
-                    <th class="border px-3 py-2">Karyawan</th>
-                    <th class="border px-3 py-2">Tanggal</th>
-                    <th class="border px-3 py-2">Durasi</th>
-                    <th class="border px-3 py-2">Alasan</th>
-                    <th class="border px-3 py-2">Status</th>
-                    <th class="border px-3 py-2">Aksi</th>
+                    <th class="px-4 py-2 text-left">Karyawan</th>
+                    <th class="px-4 py-2 text-left">Tanggal</th>
+                    <th class="px-4 py-2 text-left">Durasi</th>
+                    <th class="px-4 py-2 text-left">Alasan</th>
+                    <th class="px-4 py-2 text-left">Status</th>
+                    <th class="px-4 py-2 text-left">Aksi</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($overtimes as $overtime)
                 <tr>
-                    <td class="border px-3 py-2">{{ $overtime->employee->name ?? '-' }}</td>
-                    <td class="border px-3 py-2">{{ $overtime->date }}</td>
-                    <td class="border px-3 py-2">{{ $overtime->duration }} jam</td>
-                    <td class="border px-3 py-2">{{ $overtime->reason ?? '-' }}</td>
-                    <td class="border px-3 py-2">
-                        <span class="px-2 py-1 rounded text-white 
-                            {{ $overtime->status == 'approved' ? 'bg-green-500' : ($overtime->status == 'rejected' ? 'bg-red-500' : 'bg-yellow-500') }}">
-                            {{ ucfirst($overtime->status) }}
-                        </span>
+                    <td class="px-4 py-2">{{ $overtime->employee->name ?? '-' }}</td>
+                    <td class="px-4 py-2">{{ $overtime->date }}</td>
+                    <td class="px-4 py-2">{{ $overtime->duration }} jam</td>
+                    <td class="px-4 py-2">{{ $overtime->reason ?? '-' }}</td>
+                    <td class="px-4 py-2">
+                        @if($overtime->status == 'pending')
+                            <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-xs font-semibold">Pending</span>
+                        @elseif($overtime->status == 'approved')
+                            <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">Approved</span>
+                        @elseif($overtime->status == 'rejected')
+                            <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-semibold">Rejected</span>
+                        @else
+                            <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs font-semibold">-</span>
+                        @endif
                     </td>
-                    <td class="border px-3 py-2 text-center">
+                    <td class="px-4 py-2">
                         <a href="{{ route('admin.overtimes.show', $overtime->id) }}" 
-                           class="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded">Detail</a>
+                           class="text-indigo-600 hover:text-indigo-800 font-medium text-sm transition">Detail</a>
                     </td>
                 </tr>
                 @endforeach
@@ -75,51 +81,47 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
     <script>
     $(document).ready(function() {
         var table = $('#overtimeTable').DataTable({
             responsive: true,
             pageLength: 10,
-            lengthMenu: [5, 10, 25, 50],
-            dom: 'Bfrtip', // ✅ tombol muncul di atas tabel
-            buttons: [
-                {
-                    extend: 'excelHtml5',
-                    text: 'Export ke Excel',
-                    className: 'bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700',
-                    title: 'Daftar Pengajuan Lembur',
-                    exportOptions: {
-                            columns: [0, 1, 2, 3, 4] // kolom yang diexport (tanpa kolom Aksi)
-                    }
-                }
-            ],
-            language: {
-                search: "Cari:",
-                lengthMenu: "Tampilkan _MENU_ entri",
-                info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
-                paginate: {
-                    previous: "Sebelumnya",
-                    next: "Berikutnya"
-                },
-                emptyTable: "Tidak ada data yang tersedia"
-            }
+            dom: 'lrtip',
         });
 
         // 🔍 Filter manual
         $('#filterKaryawan').on('keyup', function() {
             table.column(0).search(this.value).draw();
         });
-        $('#filterTanggal').on('keyup', function() {
-            table.column(1).search(this.value).draw();
-        });
-        $('#filterDurasi').on('keyup', function() {
-            table.column(2).search(this.value).draw();
-        });
-        $('#filterAlasan').on('keyup', function() {
-            table.column(3).search(this.value).draw();
-        });
+       
         $('#filterStatus').on('change', function() {
             table.column(4).search(this.value).draw();
+        });
+
+        flatpickr("#dateRange", {
+            mode: "range",
+            dateFormat: "Y-m-d",
+            onClose: function() {
+                table.draw();
+            }
+        });
+
+        // ✅ Custom filter untuk tanggal
+        $.fn.dataTable.ext.search.push(function(settings, data) {
+            const range = $('#dateRange').val();
+            if (!range.includes(" to ")) return true;
+
+            const [startDate, endDate] = range.split(" to ");
+            if (!startDate || !endDate) return true;
+
+            const rowDate = data[2]?.split(" - ")[0] ?? null;
+            if (!rowDate) return true;
+
+            const date = new Date(rowDate);
+            return date >= new Date(startDate) && date <= new Date(endDate);
         });
 
         $('#resetFilter').on('click', function() {
@@ -131,14 +133,22 @@
 
     {{-- Styling tambahan untuk DataTables agar serasi dengan Tailwind --}}
     <style>
-        .dataTables_wrapper .dataTables_filter input {
-            border: 1px solid #d1d5db;
-            border-radius: 0.5rem;
-            padding: 6px 10px;
-            margin-left: 0.5em;
-            outline: none;
-            transition: all 0.2s;
+        .dataTables_wrapper .top {
+        margin-bottom: 10px;
         }
+
+        .dataTables_wrapper .bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .dataTables_length select {
+            min-width: 70px;
+        }
+
+        
         .dataTables_wrapper .dataTables_filter input:focus {
             border-color: #6366f1;
             box-shadow: 0 0 0 2px #c7d2fe;

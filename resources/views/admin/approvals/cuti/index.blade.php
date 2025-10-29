@@ -66,9 +66,6 @@
             <input type="text" id="filterNama" placeholder="Cari Karyawan"
                 class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400" />
 
-            <input type="text" id="filterJenis" placeholder="Cari Jenis"
-                class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400" />
-
             {{-- ✅ Date Range Picker --}}
             <input type="text" id="dateRange" placeholder="Rentang Tanggal"
                 class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400" />
@@ -170,11 +167,6 @@
         // ✅ Filter Nama
         $('#filterNama').on('keyup change', function () {
             table.column(0).search(this.value).draw();
-        });
-
-        // ✅ Filter Jenis
-        $('#filterJenis').on('keyup change', function () {
-            table.column(1).search(this.value).draw();
         });
 
         // ✅ Filter Status

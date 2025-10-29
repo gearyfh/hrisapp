@@ -16,13 +16,11 @@
     <div class="bg-gray-50 border border-gray-200 p-4 rounded-xl mb-5">
         <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
             <input type="text" id="filterJenis" placeholder="Cari Jenis"
-                class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400" />
-            <input type="text" id="filterTanggal" placeholder="Cari Tanggal"
-                class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400" />
-            <input type="text" id="filterHari" placeholder="Cari Total Hari"
-                class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400" />
+                class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400" />
+             <input type="text" id="dateRange" placeholder="Rentang Tanggal"
+                class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400" />
             <select id="filterStatus"
-                class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400">
+                class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400">
                 <option value="">Semua Status</option>
                 <option value="pending">Pending</option>
                 <option value="approved">Approved</option>
@@ -35,8 +33,8 @@
         </div>
     </div>
 
-    <div class="overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
-        <table id="sickTable" class="w-full text-left border-collapse">
+    <div class="overflow-x-auto border border-gray-200 rounded-xl shadow-sm">
+        <table id="sickTable" class="stripe hover w-full text-sm">
             <thead class="bg-gray-50 border-b border-gray-200">
                 <tr>
                     <th class="p-4 text-sm font-semibold text-gray-600">No</th>
@@ -53,7 +51,7 @@
                     @if($leave->leaveType->type !== 'izin_sakit')
                         @continue
                     @endif
-                    <tr class="border-b hover:bg-indigo-50 transition">
+                    <tr class="border-b hover:bg-indigo-50">
                         <td class="p-4 text-gray-700">{{ $no++ }}</td>
                         <td class="p-4 text-gray-700">{{ $leave->leaveType->name ?? '-' }}</td>
                         <td class="p-4 text-gray-700">{{ $leave->start_date }} - {{ $leave->end_date }}</td>
@@ -88,47 +86,28 @@
 @endsection
 
 @section('scripts')
-    {{-- DataTables & Buttons --}}
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+{{-- DataTables & Buttons --}}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
-    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <script>
         $(document).ready(function () {
             const table = $('#sickTable').DataTable({
                 responsive: true,
                 pageLength: 10,
-                lengthMenu: [5, 10, 25, 50],
-                dom: 'Bfrtip', // ✅ tombol muncul di atas tabel
-                buttons: [
-                    {
-                        extend: 'excelHtml5',
-                        text: 'Export ke Excel',
-                        className: 'bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm',
-                        title: 'Daftar Pengajuan Izin/Sakit',
-                        exportOptions: {
-                            columns: [0, 1, 2, 3, 4] // kolom yang diexport (tanpa kolom Aksi)
-                        }
-                    }
-                ],
-                language: {
-                    search: "Cari:",
-                    lengthMenu: "Tampilkan _MENU_ entri",
-                    info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
-                    paginate: { previous: "Sebelumnya", next: "Berikutnya" },
-                    zeroRecords: "Tidak ditemukan data.",
-                },
-                columnDefs: [
-                    { orderable: false, targets: [5] }
-                ]
+                dom: 'lrtip', // ✅ tombol muncul di atas tabel
             });
 
             // Filter Manual
@@ -140,31 +119,61 @@
                 table.column(2).search(this.value).draw();
             });
 
-            $('#filterHari').on('keyup change', function() {
-                table.column(3).search(this.value).draw();
-            });
-
             $('#filterStatus').on('change', function() {
                 table.column(4).search(this.value).draw();
+            });
+
+            
+            // ✅ Date Range Picker Setup
+            flatpickr("#dateRange", {
+                    mode: "range",
+                    dateFormat: "Y-m-d",
+                    onClose: function() {
+                        table.draw();
+                    }
+                });
+            });
+
+            // ✅ Custom filter untuk tanggal
+            $.fn.dataTable.ext.search.push(function(settings, data) {
+                const range = $('#dateRange').val();
+                if (!range.includes(" to ")) return true;
+
+                const [startDate, endDate] = range.split(" to ");
+                if (!startDate || !endDate) return true;
+
+                const rowDate = data[2]?.split(" - ")[0] ?? null;
+                if (!rowDate) return true;
+
+                const date = new Date(rowDate);
+                return date >= new Date(startDate) && date <= new Date(endDate);
             });
 
             $('#resetFilter').on('click', function() {
                 $('#filterJenis, #filterTanggal, #filterHari, #filterStatus').val('');
                 table.columns().search('').draw();
             });
-        });
+
     </script>
 
     {{-- Styling tambahan untuk DataTables agar serasi dengan Tailwind --}}
     <style>
-        .dataTables_wrapper .dataTables_filter input {
-            border: 1px solid #d1d5db;
-            border-radius: 0.5rem;
-            padding: 6px 10px;
-            margin-left: 0.5em;
-            outline: none;
-            transition: all 0.2s;
+        .dataTables_wrapper .top {
+        margin-bottom: 10px;
         }
+
+        .dataTables_wrapper .bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .dataTables_length select {
+            min-width: 70px;
+        }
+
+        
         .dataTables_wrapper .dataTables_filter input:focus {
             border-color: #6366f1;
             box-shadow: 0 0 0 2px #c7d2fe;

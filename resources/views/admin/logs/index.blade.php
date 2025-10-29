@@ -9,14 +9,10 @@
     {{-- 🔍 Filter Manual --}}
     <div class="bg-gray-50 border border-gray-200 p-4 rounded-xl mb-5">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-3 text-sm">
-            <input type="text" id="filterTanggal" placeholder="Cari tanggal..."
+            <input type="text" id="filterUser" placeholder="Cari user"
                 class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400">
-            <input type="text" id="filterUser" placeholder="Cari user..."
-                class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400">
-            <input type="text" id="filterAksi" placeholder="Cari aksi..."
-                class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400">
-            <input type="text" id="filterDeskripsi" placeholder="Cari deskripsi..."
-                class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+            <input type="text" id="dateRange" placeholder="Rentang Tanggal"
+                class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400" />
             <button id="resetFilter"
                 class="bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm px-3 py-2 rounded-lg font-medium transition">
                 Reset
@@ -25,9 +21,9 @@
     </div>
 
     {{-- 🧮 Tabel Data --}}
-    <div class="bg-white p-6 rounded-2xl shadow-lg overflow-x-auto">
-        <table id="logTable" class="min-w-full text-sm text-gray-700 border-collapse">
-            <thead class="bg-gray-200 text-gray-800">
+    <div class="overflow-x-auto border border-gray-200 rounded-xl shadow-sm">
+        <table id="logTable" class="stripe hover w-full text-sm">
+            <thead class="bg-gray-50 text-gray-700">
                 <tr>
                     <th class="px-4 py-2 text-left">Tanggal</th>
                     <th class="px-4 py-2 text-left">User</th>
@@ -37,7 +33,7 @@
             </thead>
             <tbody>
                 @foreach($logs as $log)
-                <tr class="border-b hover:bg-gray-100 transition">
+                <tr class="border-b hover:bg-gray-50">
                     <td class="px-4 py-2">{{ $log->created_at->format('d M Y H:i') }}</td>
                     <td class="px-4 py-2">{{ $log->user->name ?? 'System' }}</td>
                     <td class="px-4 py-2 font-semibold">{{ ucfirst($log->action) }}</td>
@@ -52,17 +48,20 @@
 
 @section('scripts')
 {{-- ✅ DataTables & Buttons --}}
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
-    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <script>
 $(document).ready(function() {
@@ -70,49 +69,65 @@ $(document).ready(function() {
     const table = $('#logTable').DataTable({
         responsive: true,
         pageLength: 10,
-        lengthMenu: [5, 10, 25, 50, 100],
-        dom: 'Bfrtip',
-        buttons: [
-            { extend: 'excelHtml5', text: 'Export Excel', className: 'bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700' },
-        ],
-        language: {
-            search: "Cari:",
-            lengthMenu: "Tampilkan _MENU_ entri",
-            info: "Menampilkan _START_–_END_ dari _TOTAL_ entri",
-            paginate: { previous: "Sebelumnya", next: "Berikutnya" },
-            zeroRecords: "Tidak ditemukan data."
-        }
+        dom: 'lrtip',
     });
 
     // ✅ Filter Manual per Kolom
-    $('#filterTanggal').on('keyup change', function() {
-        table.column(0).search(this.value).draw();
-    });
+
     $('#filterUser').on('keyup change', function() {
         table.column(1).search(this.value).draw();
     });
-    $('#filterAksi').on('keyup change', function() {
-        table.column(2).search(this.value).draw();
+
+    flatpickr("#dateRange", {
+            mode: "range",
+            dateFormat: "Y-m-d",
+            onClose: function() {
+                table.draw();
+            }
+        });
+
+    // ✅ Custom filter untuk tanggal
+    $.fn.dataTable.ext.search.push(function(settings, data) {
+        const range = $('#dateRange').val();
+        if (!range.includes(" to ")) return true;
+
+        const [startDate, endDate] = range.split(" to ");
+        if (!startDate || !endDate) return true;
+
+        const rowDate = data[2]?.split(" - ")[0] ?? null;
+        if (!rowDate) return true;
+
+        const date = new Date(rowDate);
+        return date >= new Date(startDate) && date <= new Date(endDate);
     });
-    $('#filterDeskripsi').on('keyup change', function() {
-        table.column(3).search(this.value).draw();
+
+    // ✅ Reset all filter
+    $('#resetFilter').click(function () {
+        $('#filterUser, #dateRange').val('');
+        table.search('').columns().search('').draw();
     });
+
 });
 </script>
 
 {{-- 💅 Tambahan gaya agar serasi dengan Tailwind --}}
 <style>
-    .dt-buttons {
-        margin-bottom: 1rem;
+    .dataTables_wrapper .top {
+        margin-bottom: 10px;
     }
-    .dataTables_wrapper .dataTables_filter input {
-        border: 1px solid #d1d5db;
-        border-radius: 0.5rem;
-        padding: 6px 10px;
-        margin-left: 0.5em;
-        outline: none;
-        transition: all 0.2s;
+
+    .dataTables_wrapper .bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
     }
+
+    .dataTables_length select {
+        min-width: 70px;
+    }
+
+    
     .dataTables_wrapper .dataTables_filter input:focus {
         border-color: #6366f1;
         box-shadow: 0 0 0 2px #c7d2fe;
@@ -122,6 +137,13 @@ $(document).ready(function() {
         border-radius: 0.5rem;
         padding: 4px 6px;
         outline: none;
+    }
+    .dataTables_wrapper .dataTables_info,
+    .dataTables_wrapper .dataTables_paginate {
+        margin-top: 0.75rem;
+    }
+    .dt-button {
+        margin-bottom: 10px !important;
     }
 </style>
 @endsection

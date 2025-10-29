@@ -10,26 +10,27 @@
         <p class="text-gray-500 text-center py-6">Belum ada pengajuan koreksi absensi.</p>
     @else
         <!-- Filter Manual -->
-        <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
-            <input type="text" id="filterPegawai" class="border border-gray-300 rounded-lg p-2 text-sm" placeholder="Cari Pegawai">
-            <input type="text" id="filterTanggal" class="border border-gray-300 rounded-lg p-2 text-sm" placeholder="Cari Tanggal">
-            <input type="text" id="filterMasukBaru" class="border border-gray-300 rounded-lg p-2 text-sm" placeholder="Cari Masuk Baru">
-            <input type="text" id="filterPulangBaru" class="border border-gray-300 rounded-lg p-2 text-sm" placeholder="Cari Pulang Baru">
-            <select id="filterStatus" class="border border-gray-300 rounded-lg p-2 text-sm">
-                <option value="">Semua Status</option>
-                <option value="pending">Pending</option>
-                <option value="approved">Approved</option>
-                <option value="rejected">Rejected</option>
-            </select>
-             <button id="resetFilter"
-                class="bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm px-3 py-2 rounded-lg font-medium transition">
-                Reset
-            </button>
+        <div class="bg-gray-50 border border-gray-200 p-4 rounded-xl mb-5">
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+                <input type="text" id="filterPegawai" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400" placeholder="Cari Pegawai">
+                <input type="text" id="dateRange" placeholder="Rentang Tanggal"
+                class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400" />
+                <select id="filterStatus" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400">
+                    <option value="">Semua Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                </select>
+                <button id="resetFilter"
+                    class="bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm px-3 py-2 rounded-lg font-medium transition">
+                    Reset
+                </button>
+            </div>
         </div>
 
-        <div class="overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
-            <table id="correctionTable" class="w-full text-left border-collapse">
-                <thead class="bg-gray-50 border-b border-gray-200">
+        <div class="overflow-x-auto border border-gray-200 rounded-xl shadow-sm">
+            <table id="correctionTable" class="stripe hover w-full text-sm">
+                <thead class="bg-gray-50 text-gray-700">
                     <tr>
                         <th class="p-4 text-sm font-semibold text-gray-600">No</th>
                         <th class="p-4 text-sm font-semibold text-gray-600">Pegawai</th>
@@ -92,44 +93,45 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 <script>
 $(document).ready(function() {
     var table = $('#correctionTable').DataTable({
-        dom: 'Bfrtip',
-        buttons: [
-            {
-                extend: 'excelHtml5',
-                text: 'Export Excel',
-                className: 'bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700'
-            }
-        ],
-        language: {
-            search: "Cari:",
-            lengthMenu: "Tampilkan _MENU_ entri",
-            info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
-            paginate: {
-                previous: "Sebelumnya",
-                next: "Berikutnya"
-            },
-            emptyTable: "Tidak ada data yang tersedia"
-        }
+        responsive: true,
+        pageLength: 10,
+        dom: 'lrtip',
     });
 
     // Filter manual
     $('#filterPegawai').on('keyup', function() {
         table.column(1).search(this.value).draw();
     });
-    $('#filterTanggal').on('keyup', function() {
-        table.column(2).search(this.value).draw();
-    });
-    $('#filterMasukBaru').on('keyup', function() {
-        table.column(4).search(this.value).draw();
-    });
-    $('#filterPulangBaru').on('keyup', function() {
-        table.column(6).search(this.value).draw();
-    });
     $('#filterStatus').on('change', function() {
         table.column(7).search(this.value).draw();
+    });
+     flatpickr("#dateRange", {
+        mode: "range",
+        dateFormat: "Y-m-d",
+        onClose: function() {
+            table.draw();
+        }
+    });
+
+    // ✅ Custom filter untuk tanggal
+    $.fn.dataTable.ext.search.push(function(settings, data) {
+        const range = $('#dateRange').val();
+        if (!range.includes(" to ")) return true;
+
+        const [startDate, endDate] = range.split(" to ");
+        if (!startDate || !endDate) return true;
+
+        const rowDate = data[2]?.split(" - ")[0] ?? null;
+        if (!rowDate) return true;
+
+        const date = new Date(rowDate);
+        return date >= new Date(startDate) && date <= new Date(endDate);
     });
     $('#resetFilter').on('click', function() {
         $('#filterPegawai, #filterTanggal, #filterMasukBaru, #filterPulangBaru').val('');
@@ -138,14 +140,22 @@ $(document).ready(function() {
 });
 </script>
 <style>
-        .dataTables_wrapper .dataTables_filter input {
-            border: 1px solid #d1d5db;
-            border-radius: 0.5rem;
-            padding: 6px 10px;
-            margin-left: 0.5em;
-            outline: none;
-            transition: all 0.2s;
+        .dataTables_wrapper .top {
+        margin-bottom: 10px;
         }
+
+        .dataTables_wrapper .bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .dataTables_length select {
+            min-width: 70px;
+        }
+
+        
         .dataTables_wrapper .dataTables_filter input:focus {
             border-color: #6366f1;
             box-shadow: 0 0 0 2px #c7d2fe;

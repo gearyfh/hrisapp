@@ -59,6 +59,8 @@ class ProfileController extends Controller
             'new_password' => ['required', 'min:6', 'confirmed'],
         ]);
 
+        
+    /** @var \App\Models\User $user */
         $user = Auth::user();
 
         // Cek apakah password lama benar

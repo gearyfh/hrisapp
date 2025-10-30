@@ -23,6 +23,10 @@
         </div>
     @endif
 
+    
+     @if($documents->isEmpty())
+        <p class="text-gray-500 text-center py-6">Belum ada dokumen.</p>
+    @else
     {{-- 🔍 Filter Manual --}}
     <div class="bg-gray-50 border border-gray-200 p-4 rounded-xl mb-5">
         <h2 class="text-lg font-semibold text-gray-700 mb-3 flex items-center gap-2">
@@ -56,7 +60,7 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse($documents as $doc)
+                @foreach($documents as $doc)
                     <tr class="border-b hover:bg-indigo-50 transition">
                         <td class="p-4 text-gray-700">{{ $doc->nama_file }}</td>
                         <td class="p-4 text-gray-700">{{ $doc->tipe }}</td>
@@ -65,14 +69,11 @@
                             <a href="{{ asset($doc->path) }}" target="_blank" class="text-blue-600 hover:underline">Lihat</a>
                         </td>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="4" class="p-6 text-center text-gray-500">Belum ada dokumen.</td>
-                    </tr>
-                @endforelse
+                @endforeach
             </tbody>
         </table>
     </div>
+    @endif
 </div>
 @endsection
 

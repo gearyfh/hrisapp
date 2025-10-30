@@ -23,15 +23,7 @@
                 clip-rule="evenodd" />
         </svg>
         Filter
-    </h2>
-        <h2 class="text-lg font-semibold text-gray-700 mb-3 flex items-center gap-2">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-500" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd"
-                d="M3 4a1 1 0 011-1h12a1 1 0 01.894 1.447l-4.382 8.764A1 1 0 0111 13v3a1 1 0 01-1.447.894l-2-1A1 1 0 017 15v-2.236L2.106 4.447A1 1 0 013 4z"
-                clip-rule="evenodd" />
-        </svg>
-        Filter
-    </h2>
+        </h2>
         <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
         <input type="text" id="filterNama" placeholder="Cari Nama" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400">
         <input type="text" id="dateRange" placeholder="Rentang Tanggal"
@@ -127,7 +119,18 @@ $(document).ready(function() {
     const table = $('#employeeTable').DataTable({
         responsive: true,
         pageLength: 10,
-        dom: 'lrtip',
+        dom: '<"flex justify-between items-center mb-3"B>lrtip', // Tambahkan posisi tombol
+        buttons: [
+            {
+                extend: 'excelHtml5',
+                text: '📊 Export to Excel',
+                className: 'bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 transition text-sm',
+                title: 'Data Karyawan',
+                exportOptions: {
+                    columns: ':not(:last-child)' // ⛔ tidak export kolom aksi
+                }
+            }
+        ]
     });
 
     // ✅ Filter manual
@@ -189,6 +192,99 @@ $(document).ready(function() {
 });
 </script>
 <style>
+    /* 🌿 Area filter card */
+    .filter-card {
+        //background: linear-gradient(to right, #f9fafb, #f3f4f6);
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+        transition: all 0.3s ease;
+    }
+
+    .filter-card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+    }
+
+    /* 📋 Tombol Excel modern */
+    .dt-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: linear-gradient(to right, #16a34a, #22c55e) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 0.5rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        box-shadow: 0 2px 6px rgba(34, 197, 94, 0.3);
+        transition: all 0.25s ease;
+    }
+
+    .dt-button:hover {
+        background: linear-gradient(to right, #15803d, #16a34a);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(34, 197, 94, 0.4);
+    }
+
+    /* 📊 Table styling lembut */
+    table.dataTable thead th {
+        background: #f9fafb;
+        font-weight: 600;
+        color: #374151;
+        border-bottom: 2px solid #e5e7eb;
+    }
+
+    table.dataTable tbody td {
+        border-bottom: 1px solid #f1f5f9;
+        padding: 0.9rem 1rem;
+    }
+
+    table.dataTable tbody tr:hover {
+        background-color: #f9fafb;
+        transition: background 0.2s ease;
+    }
+
+    /* 📎 Pagination dan info text */
+    .dataTables_wrapper .dataTables_info {
+        color: #4b5563;
+        font-size: 0.875rem;
+        margin-top: 0.75rem;
+    }
+
+    .dataTables_wrapper .dataTables_paginate {
+        margin-top: 0.75rem;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        border: none;
+        border-radius: 0.375rem;
+        padding: 5px 10px;
+        margin: 0 2px;
+        background: #f3f4f6;
+        color: #4b5563 !important;
+        transition: all 0.2s ease;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        background: #e5e7eb;
+        color: #111827 !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        background: #E6E6E6 !important;
+        font-weight: 500;
+    }
+
+    /* 📱 Responsif */
+    @media (max-width: 768px) {
+        .dt-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+        }
+    }
+
     .dataTables_wrapper .top {
         margin-bottom: 10px;
     }
@@ -204,7 +300,6 @@ $(document).ready(function() {
         min-width: 70px;
     }
 
-    
     .dataTables_wrapper .dataTables_filter input:focus {
         border-color: #6366f1;
         box-shadow: 0 0 0 2px #c7d2fe;

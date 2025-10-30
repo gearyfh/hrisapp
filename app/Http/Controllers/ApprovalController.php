@@ -24,26 +24,34 @@ class ApprovalController extends Controller
     }
 
     public function cuti(Request $request)
-    {
+{
+    $status = $request->status;
 
-            $status = $request->status;
+    // 🔹 Ambil semua request cuti, bisa difilter status
+    $requests = LeaveRequest::with(['employee', 'leaveType'])
+        ->whereHas('leaveType', fn($q) => $q->where('type', 'cuti'))
+        ->when($status, fn($q) => $q->where('status', $status))
+        ->latest()
+        ->get();
 
-
-        $requests = LeaveRequest::with(['employee', 'leaveType'])
+    // 🔹 Hitung jumlah berdasarkan status tapi hanya untuk type = cuti
+    $counts = [
+        'pending'  => LeaveRequest::where('status', 'pending')
             ->whereHas('leaveType', fn($q) => $q->where('type', 'cuti'))
-            ->when($status, fn($q) => $q->where('status', $status))
-            // ->orderBy()
-            ->latest()
-            ->get();
+            ->count(),
 
-            $counts = [
-    'pending' => LeaveRequest::where('status', 'pending')->count(),
-    'approved' => LeaveRequest::where('status', 'approved')->count(),
-    'rejected' => LeaveRequest::where('status', 'rejected')->count(),
-];
+        'approved' => LeaveRequest::where('status', 'approved')
+            ->whereHas('leaveType', fn($q) => $q->where('type', 'cuti'))
+            ->count(),
 
-        return view('admin.approvals.cuti.index', compact('requests', 'counts'));
-    }
+        'rejected' => LeaveRequest::where('status', 'rejected')
+            ->whereHas('leaveType', fn($q) => $q->where('type', 'cuti'))
+            ->count(),
+    ];
+
+    return view('admin.approvals.cuti.index', compact('requests', 'counts'));
+}
+
 
     public function izinSakit()
     {

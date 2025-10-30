@@ -67,23 +67,52 @@
     </button>
 
     <!-- Submenu -->
-    <div
-        x-show="open"
-        x-transition
-        class="pl-6 mt-1 space-y-1"
-        @click.away="open = false"
-    >
-        <a href="{{ route('admin.approvals.cuti.index') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Cuti Karyawan</a>
-                <a href="{{ route('admin.approvals.izin_sakit') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Izin / Sakit Karyawan</a>
-                <a href="{{ route('admin.corrections.index') }}" class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">Koreksi Absensi Karyawan</a>
+    <div x-show="open" x-transition class="pl-6 mt-1 space-y-1" @click.away="open = false">
+    <!-- Cuti -->
+    <a href="{{ route('admin.approvals.cuti.index') }}" 
+       class="flex justify-between items-center py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-base">
+       <span>Cuti Karyawan</span>
+       @if($pendingCuti > 0)
+           <span class="inline-flex items-center justify-center min-w-[18px] h-[18px] bg-red-500 text-white text-xs font-bold rounded-full px-1">
+               {{ $pendingCuti }}
+           </span>
+       @endif
+    </a>
 
-                            <a href="{{ route('admin.overtimes.index') }}" 
-                            class="block py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-lg">
-                            Jam Lembur Karyawan
-                            </a>
+    <!-- Izin / Sakit -->
+    <a href="{{ route('admin.approvals.izin_sakit') }}" 
+       class="flex justify-between items-center py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-base">
+       <span>Izin / Sakit Karyawan</span>
+       @if($pendingSakit > 0)
+           <span class="inline-flex items-center justify-center min-w-[18px] h-[18px] bg-red-500 text-white text-xs font-bold rounded-full px-1">
+               {{ $pendingSakit }}
+           </span>
+       @endif
+    </a>
 
-        </a>
-    </div>
+    <!-- Koreksi Absensi -->
+    <a href="{{ route('admin.corrections.index') }}" 
+       class="flex justify-between items-center py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-base">
+       <span>Koreksi Absensi Karyawan</span>
+       @if($pendingKoreksi > 0)
+           <span class="inline-flex items-center justify-center min-w-[18px] h-[18px] bg-red-500 text-white text-xs font-bold rounded-full px-1">
+               {{ $pendingKoreksi }}
+           </span>
+       @endif
+    </a>
+
+    <!-- Lembur -->
+    <a href="{{ route('admin.overtimes.index') }}" 
+       class="flex justify-between items-center py-2 px-3 rounded hover:bg-gray-100 hover:text-black text-base">
+       <span>Jam Lembur Karyawan</span>
+       @if($pendingLembur > 0)
+           <span class="inline-flex items-center justify-center min-w-[18px] h-[18px] bg-red-500 text-white text-xs font-bold rounded-full px-1">
+               {{ $pendingLembur }}
+           </span>
+       @endif
+    </a>
+</div>
+
 </div>
 
                             <a href="{{ route('admin.data.absensi.index') }}" 

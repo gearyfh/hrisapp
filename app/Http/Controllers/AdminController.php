@@ -1,16 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
-use Carbon\Carbon;
 
 use App\Models\Attendance;
-use App\Models\OvertimeRequest;
-use App\Models\Employee;
 use App\Models\LeaveRequest;
-use App\Models\User;
-use Illuminate\Http\Request;   
-use App\Helpers\ActivityLogger;
-
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
@@ -18,12 +12,13 @@ class AdminController extends Controller
     public function index()
     {
         $user = Auth::user();
+
         // Pastikan hanya admin yang boleh masuk
         if ($user->role !== 'admin') {
             return redirect()->back()->with('error', 'Anda bukan admin!');
         }
 
-        // Ambil semua absensi dan cuti pegawai
+        // Ambil data absensi dan cuti terbaru
         $attendances = Attendance::with('employee')
             ->orderBy('tanggal_masuk', 'desc')
             ->take(10)
@@ -34,9 +29,39 @@ class AdminController extends Controller
             ->take(10)
             ->get();
 
-        return view('dashboard.admin', compact('attendances', 'leaves'));
-    }
+        // === [1] Grafik Kehadiran Bulanan (Line Chart) ===
+        $attendanceData = Attendance::selectRaw('DATE(tanggal_masuk) as tanggal, COUNT(*) as total')
+            ->whereMonth('tanggal_masuk', Carbon::now()->month)
+            ->groupBy('tanggal')
+            ->orderBy('tanggal')
+            ->get();
 
+        $attendanceDates = $attendanceData->pluck('tanggal');
+        $attendanceCounts = $attendanceData->pluck('total');
+
+        // === [2] Grafik Jenis Absensi (Bar Chart) ===
+        $typeCounts = [
+            'WFO' => Attendance::where('jenis', 'WFO')->count(),
+            'WFH' => Attendance::where('jenis', 'WFH')->count(),
+            'Izin' => Attendance::where('jenis', 'Izin')->count(),
+        ];
+
+        // === [3] Grafik Status Pengajuan (Pie Chart) ===
+        $leaveStatusCounts = [
+            'pending' => LeaveRequest::where('status', 'pending')->count(),
+            'approved' => LeaveRequest::where('status', 'approved')->count(),
+            'rejected' => LeaveRequest::where('status', 'rejected')->count(),
+        ];
+
+        return view('dashboard.admin', compact(
+            'attendances',
+            'leaves',
+            'attendanceDates',
+            'attendanceCounts',
+            'typeCounts',
+            'leaveStatusCounts'
+        ));
+    }
 
 // public function indexTotalAbsensi(Request $request)
 // {

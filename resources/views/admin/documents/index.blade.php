@@ -100,6 +100,10 @@
                 responsive: true,
                 pageLength: 10,
                 dom: 'lrtip',
+                language: {
+                    info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+                    paginate: { previous: "‹", next: "›" },
+                },
             });
 
             // Filter Manual

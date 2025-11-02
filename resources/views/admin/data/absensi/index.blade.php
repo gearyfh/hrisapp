@@ -16,19 +16,28 @@
     </div>
 
     {{-- Filter Bulan --}}
+    <div class="bg-gray-50 border border-gray-200 p-4 rounded-xl mb-5">
+        <h2 class="text-lg font-semibold text-gray-700 mb-3 flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-500" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd"
+                d="M3 4a1 1 0 011-1h12a1 1 0 01.894 1.447l-4.382 8.764A1 1 0 0111 13v3a1 1 0 01-1.447.894l-2-1A1 1 0 017 15v-2.236L2.106 4.447A1 1 0 013 4z"
+                clip-rule="evenodd" />
+        </svg>
+        Filter
+    </h2>
     <form method="GET" action="{{ route('admin.data.absensi.index') }}" class="flex items-center gap-2 mb-4">
 
         {{-- Input bulan --}}
         <input type="month" name="month" value="{{ request('month', now()->format('Y-m')) }}"
-               class="border rounded-md px-3 py-1">
+               class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400">
 
         {{-- Search nama --}}
         <input type="text" name="search" placeholder="Cari nama..."
                value="{{ request('search') }}"
-               class="border rounded-md px-3 py-1">
+               class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400">
 
         {{-- Sorting --}}
-        <select name="sort" class="border rounded-md px-2 py-1">
+        <select name="sort" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400">
             <option value="">Urutan Default</option>
             <option value="name_asc" {{ request('sort')=='name_asc'?'selected':'' }}>Nama A → Z</option>
             <option value="name_desc" {{ request('sort')=='name_desc'?'selected':'' }}>Nama Z → A</option>
@@ -41,6 +50,7 @@
         </button>
 
     </form>
+    </div>
 
     <table id="recapTable" class="min-w-full border border-gray-200 text-sm text-left">
         <thead class="bg-gray-100 text-gray-700">
@@ -118,6 +128,10 @@ $(document).ready(function() {
                 }
             }
         ],
+        language: {
+            info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+            paginate: { previous: "‹", next: "›" },
+        },
         columnDefs: [
             { type: 'natural', targets: 0 } // 👈 kolom pertama (Nama)
         ]

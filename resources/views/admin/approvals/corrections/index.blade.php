@@ -120,7 +120,11 @@ $(document).ready(function() {
                     columns: ':not(:last-child)' // ⛔ tidak export kolom aksi
                 }
             }
-        ] // ✅ tombol muncul di atas tabel
+        ], // ✅ tombol muncul di atas tabel
+        language: {
+            info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+            paginate: { previous: "‹", next: "›" },
+        },
     });
 
     // Filter manual

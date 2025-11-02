@@ -130,7 +130,11 @@ $(document).ready(function() {
                     columns: ':not(:last-child)' // ⛔ tidak export kolom aksi
                 }
             }
-        ]
+        ],
+        language: {
+            info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+            paginate: { previous: "‹", next: "›" },
+        },
     });
 
     // ✅ Filter manual

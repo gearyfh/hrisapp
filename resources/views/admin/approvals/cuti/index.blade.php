@@ -182,6 +182,10 @@
                     }
                 }
             ],
+            language: {
+                info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+                paginate: { previous: "‹", next: "›" },
+            },
             columnDefs: [
                 { type: 'natural', targets: 0 } // 👈 kolom pertama (Nama)
             ]

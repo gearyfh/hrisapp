@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+
 use App\Models\Attendance;
 use App\Models\LeaveRequest;
 use Carbon\Carbon;
@@ -9,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
 
@@ -18,20 +20,27 @@ class AdminController extends Controller
             return redirect()->back()->with('error', 'Anda bukan admin!');
         }
 
-        // Ambil data absensi dan cuti terbaru
+        // Ambil bulan dari request (default ke bulan sekarang)
+        $targetMonth = $request->input('month', Carbon::now()->month);
+        $currentYear = Carbon::now()->year;
+
+        // Ambil data absensi dan cuti terbaru berdasarkan bulan
         $attendances = Attendance::with('employee')
+            ->whereMonth('tanggal_masuk', $targetMonth)
+            ->whereYear('tanggal_masuk', $currentYear)
             ->orderBy('tanggal_masuk', 'desc')
-            ->take(10)
             ->get();
 
         $leaves = LeaveRequest::with(['employee', 'leaveType'])
+            ->whereMonth('start_date', $targetMonth)
+            ->whereYear('start_date', $currentYear)
             ->latest()
-            ->take(10)
             ->get();
 
-        // === [1] Grafik Kehadiran Bulanan (Line Chart) ===
+        // === [1] Grafik Kehadiran Bulanan ===
         $attendanceData = Attendance::selectRaw('DATE(tanggal_masuk) as tanggal, COUNT(*) as total')
-            ->whereMonth('tanggal_masuk', Carbon::now()->month)
+            ->whereMonth('tanggal_masuk', $targetMonth)
+            ->whereYear('tanggal_masuk', $currentYear)
             ->groupBy('tanggal')
             ->orderBy('tanggal')
             ->get();
@@ -39,18 +48,36 @@ class AdminController extends Controller
         $attendanceDates = $attendanceData->pluck('tanggal');
         $attendanceCounts = $attendanceData->pluck('total');
 
-        // === [2] Grafik Jenis Absensi (Bar Chart) ===
+        // === [2] Grafik Jenis Absensi ===
         $typeCounts = [
-            'WFO' => Attendance::where('jenis', 'WFO')->count(),
-            'WFH' => Attendance::where('jenis', 'WFH')->count(),
-            'Izin' => Attendance::where('jenis', 'Izin')->count(),
+            'WFO' => Attendance::where('jenis', 'WFO')
+                ->whereMonth('tanggal_masuk', $targetMonth)
+                ->whereYear('tanggal_masuk', $currentYear)
+                ->count(),
+            'WFH' => Attendance::where('jenis', 'WFH')
+                ->whereMonth('tanggal_masuk', $targetMonth)
+                ->whereYear('tanggal_masuk', $currentYear)
+                ->count(),
+            'Izin' => Attendance::where('jenis', 'Izin')
+                ->whereMonth('tanggal_masuk', $targetMonth)
+                ->whereYear('tanggal_masuk', $currentYear)
+                ->count(),
         ];
 
-        // === [3] Grafik Status Pengajuan (Pie Chart) ===
+        // === [3] Grafik Status Pengajuan ===
         $leaveStatusCounts = [
-            'pending' => LeaveRequest::where('status', 'pending')->count(),
-            'approved' => LeaveRequest::where('status', 'approved')->count(),
-            'rejected' => LeaveRequest::where('status', 'rejected')->count(),
+            'pending' => LeaveRequest::where('status', 'pending')
+                ->whereMonth('start_date', $targetMonth)
+                ->whereYear('start_date', $currentYear)
+                ->count(),
+            'approved' => LeaveRequest::where('status', 'approved')
+                ->whereMonth('start_date', $targetMonth)
+                ->whereYear('start_date', $currentYear)
+                ->count(),
+            'rejected' => LeaveRequest::where('status', 'rejected')
+                ->whereMonth('start_date', $targetMonth)
+                ->whereYear('start_date', $currentYear)
+                ->count(),
         ];
 
         return view('dashboard.admin', compact(
@@ -59,7 +86,8 @@ class AdminController extends Controller
             'attendanceDates',
             'attendanceCounts',
             'typeCounts',
-            'leaveStatusCounts'
+            'leaveStatusCounts',
+            'targetMonth'
         ));
     }
 

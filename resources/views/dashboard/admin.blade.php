@@ -49,6 +49,23 @@
         </div>
     </div>
 
+    <!-- Filter Bulan -->
+    <div class="flex justify-end mt-4">
+        <form method="GET" action="{{ route('admin') }}" class="flex items-center gap-3">
+            <label for="month" class="text-sm font-medium text-gray-700">Pilih Bulan:</label>
+            <select id="month" name="month" class="border rounded-lg px-3 py-2 text-sm focus:ring-indigo-500 focus:border-indigo-500">
+                @foreach (range(1, 12) as $m)
+                    <option value="{{ $m }}" {{ $m == $targetMonth ? 'selected' : '' }}>
+                        {{ \Carbon\Carbon::create()->month($m)->translatedFormat('F') }}
+                    </option>
+                @endforeach
+            </select>
+            <button type="submit" class="bg-indigo-600 text-white text-sm px-3 py-2 rounded-lg hover:bg-indigo-700 transition">
+                Tampilkan
+            </button>
+        </form>
+    </div>
+
     <!-- Grafik Section -->
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-6">
         <!-- Kehadiran Bulanan -->
@@ -95,7 +112,7 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 text-gray-700">
-                    @forelse ($attendances as $absen)
+                    @foreach ($attendances as $absen)
                         <tr class="hover:bg-indigo-50 transition-colors duration-200">
                             <td class="px-4 py-3 font-medium">{{ $absen->employee->name ?? '-' }}</td>
                             <td class="px-4 py-3">{{ $absen->tanggal_masuk }}</td>
@@ -103,11 +120,11 @@
                             <td class="px-4 py-3">{{ $absen->jam_keluar ?? '-' }}</td>
                             <td class="px-4 py-3">{{ ucfirst($absen->jenis) ?? '-' }}</td>
                         </tr>
-                    @empty
+                    {{-- @empty
                         <tr>
                             <td colspan="5" class="text-center py-4 text-gray-500 italic">Belum ada data absensi</td>
-                        </tr>
-                    @endforelse
+                        </tr> --}}
+                    @endforeach
                 </tbody>
             </table>
         </div>
@@ -132,7 +149,7 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 text-gray-700">
-                    @forelse ($leaves as $leave)
+                    @foreach ($leaves as $leave)
                         <tr class="hover:bg-indigo-50 transition-colors duration-200">
                             <td class="px-4 py-3 font-medium">{{ $leave->employee->name ?? '-' }}</td>
                             <td class="px-4 py-3">{{ $leave->leaveType->name ?? '-' }}</td>
@@ -162,11 +179,11 @@
                                 @endif
                             </td>
                         </tr>
-                    @empty
+                    {{-- @empty
                         <tr>
                             <td colspan="6" class="text-center py-4 text-gray-500 italic">Belum ada pengajuan cuti atau izin</td>
-                        </tr>
-                    @endforelse
+                        </tr> --}}
+                    @endforeach
                 </tbody>
             </table>
         </div>

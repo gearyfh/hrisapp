@@ -67,7 +67,7 @@
             </thead>
             <tbody>
                 @php $no = 1; @endphp
-                @forelse($leaves as $leave)
+                @foreach($leaves as $leave)
                     @if($leave->leaveType->type != 'izin_sakit')
                         @continue
                     @endif
@@ -94,11 +94,11 @@
                             </a>
                         </td>
                     </tr>
-                @empty
+                {{-- @empty
                     <tr>
                         <td colspan="6" class="p-6 text-center text-gray-500">Belum ada pengajuan.</td>
-                    </tr>
-                @endforelse
+                    </tr> --}}
+                @endforeach
             </tbody>
         </table>
     </div>

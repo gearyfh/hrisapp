@@ -64,7 +64,7 @@ class AbsensiController extends Controller
             'lokasi'  => 'nullable|string|max:255',
         ]);
 
-        Attendance::create([
+         $attendance = Attendance::create([
             'employee_id'   => $employee->id,
             'jenis'         => $validated['jenis'],
             'tanggal_masuk' => now()->format('Y-m-d'),

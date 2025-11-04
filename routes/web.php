@@ -18,6 +18,25 @@ use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\WorkSummaryController;
 use Illuminate\Support\Facades\Route;
 
+use Illuminate\Support\Facades\DB;
+
+Route::get('/test-mongo', function () {
+    try {
+        $dbs = DB::connection('mongodb')->getMongoClient()->listDatabases();
+        return response()->json([
+            'status' => 'success',
+            'databases' => iterator_to_array($dbs),
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage(),
+        ]);
+    }
+});
+
+
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes

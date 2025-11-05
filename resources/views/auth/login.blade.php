@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{{ asset('storage/Logo_app.png') }}">
     <title>Login | PT </title>
     @vite('resources/css/app.css')
 </head>
@@ -11,9 +12,9 @@
     <div class="flex w-full max-w-5xl bg-gray-800 rounded-2xl overflow-hidden shadow-2xl">
         <!-- Kiri -->
         <div class="hidden md:flex flex-col justify-center items-center w-1/2 bg-indigo-600 p-10 text-white">
-            <img src="{{ asset('images/logo-pt.png') }}" alt="Logo PT" class="w-40 h-auto mb-6">
-            <h1 class="text-3xl font-bold">PT .....</h1>
-            <p class="text-indigo-100 mt-3">Selamat datang di sistem HRIS kami</p>
+            <img src="{{ asset('storage/Logo_app.png') }}" alt="Logo PT" class="w-40 h-auto mb-6">
+            <h1 class="text-3xl font-bold">PT</h1>
+            <p class="text-indigo-100 mt-3">Welcome</p>
         </div>
 
         <!-- Kanan -->
@@ -26,7 +27,7 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('login') }}" class="space-y-6">
+            <form method="POST" action="{{ route('login') }}" class="space-y-6" autocomplete="off">
                 @csrf
 
                 <!-- Email -->
